@@ -1889,6 +1889,691 @@ model-index:
 
 ---
 
+## Data Model
+
+This section defines the TypeScript interfaces and types that form the foundation of the scanner's type system. All types are exported from `src/types/index.ts`.
+
+### Core Enumerations
+
+```typescript
+/**
+ * Severity levels for findings, ordered by impact
+ * Numeric values enable comparison and aggregation
+ */
+export enum Severity {
+  PASS = -1,      // Check passed, no issues
+  INFO = 0,       // Informational, no action required
+  WARNING = 1,    // Should be addressed, not blocking
+  CRITICAL = 2,   // Must be addressed, blocks quality gates
+}
+
+/**
+ * Strategic pillars for categorizing checks
+ * Maps to weighted scoring (see Story 1.3b)
+ */
+export enum Pillar {
+  SECURITY = 'security',           // 25% weight
+  GOVERNANCE = 'governance',       // 20% weight
+  COMMUNITY = 'community',         // 15% weight
+  AI_READINESS = 'ai_readiness',   // 15% weight
+  INCLUSIVE = 'inclusive',         // 15% weight
+  TECHNICAL = 'technical',         // 10% weight
+}
+
+/**
+ * Pillar weights for overall score calculation
+ */
+export const PILLAR_WEIGHTS: Record<Pillar, number> = {
+  [Pillar.SECURITY]: 0.25,
+  [Pillar.GOVERNANCE]: 0.20,
+  [Pillar.COMMUNITY]: 0.15,
+  [Pillar.AI_READINESS]: 0.15,
+  [Pillar.INCLUSIVE]: 0.15,
+  [Pillar.TECHNICAL]: 0.10,
+};
+
+/**
+ * Project maturity levels for contextual scoring
+ */
+export enum MaturityLevel {
+  SANDBOX = 'sandbox',         // Early-stage, experimental
+  INCUBATING = 'incubating',   // Growing adoption
+  GRADUATED = 'graduated',     // Production-ready
+  ARCHIVED = 'archived',       // Maintenance mode
+}
+
+/**
+ * Risk levels derived from overall score
+ */
+export enum RiskLevel {
+  CRITICAL = 'CRITICAL',   // Score < 4.0
+  HIGH = 'HIGH',           // Score 4.0 - 5.9
+  MEDIUM = 'MEDIUM',       // Score 6.0 - 7.9
+  LOW = 'LOW',             // Score >= 8.0
+}
+
+/**
+ * Scan depth modes
+ */
+export enum ScanDepth {
+  QUICK = 'quick',         // File presence only, < 5s
+  STANDARD = 'standard',   // Presence + content, < 15s
+  THOROUGH = 'thorough',   // All checks + API calls, < 60s
+}
+
+/**
+ * Output format options
+ */
+export enum OutputFormat {
+  JSON = 'json',
+  MARKDOWN = 'markdown',
+}
+```
+
+### Scanner System Types
+
+```typescript
+/**
+ * Context provided to each scanner during execution
+ */
+export interface ScanContext {
+  /** Absolute path to repository root */
+  repoPath: string;
+
+  /** GitHub owner/repo if remote, null if local-only */
+  repoIdentifier: string | null;
+
+  /** Detected or configured maturity level */
+  maturity: MaturityLevel;
+
+  /** Current scan depth */
+  depth: ScanDepth;
+
+  /** Merged configuration (defaults + file + CLI) */
+  config: ScannerConfig;
+
+  /** Git metadata if available */
+  git: {
+    commitSha: string | null;
+    branch: string | null;
+    remoteUrl: string | null;
+  };
+
+  /** GitHub API client (authenticated if token provided) */
+  github: GitHubClient | null;
+
+  /** ZeroDB client for storage/vector operations */
+  zerodb: ZeroDBClient | null;
+
+  /** Abort signal for timeout handling */
+  signal: AbortSignal;
+
+  /** Emit progress events */
+  emit: (event: ScanEvent) => void;
+}
+
+/**
+ * Scanner plugin interface - all scanners must implement this
+ */
+export interface Scanner {
+  /** Unique scanner identifier (e.g., 'license-presence') */
+  name: string;
+
+  /** Display name for reports */
+  displayName: string;
+
+  /** Which pillar this scanner belongs to */
+  pillar: Pillar;
+
+  /** Optional: run after these scanners complete */
+  dependsOn?: string[];
+
+  /** Execute the scan and return findings */
+  run(context: ScanContext): Promise<Finding[]>;
+}
+
+/**
+ * Individual finding from a scanner
+ */
+export interface Finding {
+  /** Unique finding ID (e.g., 'SEC-01', 'GOV-03') */
+  id: string;
+
+  /** Severity level */
+  severity: Severity;
+
+  /** Parent pillar */
+  pillar: Pillar;
+
+  /** Sub-category within pillar (e.g., 'license', 'branch-protection') */
+  category: string;
+
+  /** Human-readable message describing the finding */
+  message: string;
+
+  /** Affected file path (relative to repo root), null if repo-level */
+  file: string | null;
+
+  /** Line number (1-indexed), null if file-level or N/A */
+  line: number | null;
+
+  /** Column number (1-indexed), null if line-level or N/A */
+  column: number | null;
+
+  /** Code/content context around the finding */
+  context?: string;
+
+  /** Actionable suggestion for remediation */
+  suggestion: string;
+
+  /** URL to documentation or external reference */
+  referenceUrl?: string;
+
+  /** Raw data for programmatic consumers */
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Progress events emitted during scan
+ */
+export type ScanEvent =
+  | { type: 'scan:start'; repoPath: string; depth: ScanDepth }
+  | { type: 'scanner:start'; scanner: string; pillar: Pillar }
+  | { type: 'scanner:complete'; scanner: string; findingCount: number; durationMs: number }
+  | { type: 'scan:complete'; totalFindings: number; durationMs: number };
+```
+
+### Report Output Types
+
+```typescript
+/**
+ * Complete scan report - primary output of the scanner
+ */
+export interface ScanReport {
+  /** Repository identifier (owner/repo or local path) */
+  repo: string;
+
+  /** ISO 8601 timestamp of scan completion */
+  scannedAt: string;
+
+  /** Scanner version (from package.json) */
+  version: string;
+
+  /** Scan depth used */
+  depth: ScanDepth;
+
+  /** Total scan duration in milliseconds */
+  durationMs: number;
+
+  /** Overall weighted score (0.0 - 10.0) */
+  overallScore: number;
+
+  /** Derived risk level */
+  riskLevel: RiskLevel;
+
+  /** Detected or configured maturity */
+  maturity: MaturityLevel;
+
+  /** Per-pillar breakdown */
+  pillars: Record<Pillar, PillarScore>;
+
+  /** All findings from all scanners */
+  findings: Finding[];
+
+  /** Prioritized recommendations */
+  recommendations: Recommendation[];
+
+  /** Repository metadata */
+  metadata: RepoMetadata;
+}
+
+/**
+ * Score and findings for a single pillar
+ */
+export interface PillarScore {
+  /** Pillar score (0.0 - 10.0) */
+  score: number;
+
+  /** Weight applied to overall score */
+  weight: number;
+
+  /** Weighted contribution to overall score */
+  weightedScore: number;
+
+  /** Count by severity */
+  counts: {
+    critical: number;
+    warning: number;
+    info: number;
+    pass: number;
+  };
+
+  /** Scanner names that contributed to this pillar */
+  scanners: string[];
+}
+
+/**
+ * Actionable recommendation derived from findings
+ */
+export interface Recommendation {
+  /** Priority rank (1 = highest) */
+  priority: number;
+
+  /** Action to take (imperative form) */
+  action: string;
+
+  /** Expected impact on score */
+  impact: 'high' | 'medium' | 'low';
+
+  /** Estimated effort to implement */
+  effort: 'low' | 'medium' | 'high';
+
+  /** Related finding IDs */
+  findingIds: string[];
+
+  /** Resources/links for implementation */
+  resources?: string[];
+}
+
+/**
+ * Repository metadata captured during scan
+ */
+export interface RepoMetadata {
+  /** Git commit SHA if available */
+  commitSha: string | null;
+
+  /** Current branch name */
+  branch: string | null;
+
+  /** Remote URL (e.g., git@github.com:owner/repo.git) */
+  remoteUrl: string | null;
+
+  /** Detected primary language */
+  primaryLanguage: string | null;
+
+  /** Total lines of code (if computed) */
+  linesOfCode: number | null;
+
+  /** Stars count (GitHub only) */
+  stars: number | null;
+
+  /** Forks count (GitHub only) */
+  forks: number | null;
+
+  /** Open issues count (GitHub only) */
+  openIssues: number | null;
+}
+```
+
+### Configuration Types
+
+```typescript
+/**
+ * Complete scanner configuration
+ * Loaded from .quaid-scanner.yaml, CLI args, and defaults
+ */
+export interface ScannerConfig {
+  /** Maturity level override (null = auto-detect) */
+  maturity: MaturityLevel | null;
+
+  /** Scan depth */
+  depth: ScanDepth;
+
+  /** Output format */
+  format: OutputFormat;
+
+  /** Output file path (null = stdout) */
+  output: string | null;
+
+  /** Minimum score threshold (fail if below) */
+  threshold: number | null;
+
+  /** Suppress progress output */
+  quiet: boolean;
+
+  /** Show detailed progress */
+  verbose: boolean;
+
+  /** Per-scanner timeout in milliseconds */
+  scannerTimeout: number;
+
+  /** GitHub token for API access */
+  githubToken: string | null;
+
+  /** ZeroDB API key */
+  zerodbApiKey: string | null;
+
+  /** ZeroDB project ID */
+  zerodbProjectId: string | null;
+
+  /** Pillar-specific configuration */
+  pillars: PillarConfig;
+
+  /** Bot filtering configuration */
+  bots: BotFilterConfig;
+
+  /** Inclusive language configuration */
+  inclusive: InclusiveConfig;
+}
+
+/**
+ * Per-pillar configuration overrides
+ */
+export interface PillarConfig {
+  /** Disable specific pillars entirely */
+  disabled: Pillar[];
+
+  /** Custom weights (must sum to 1.0) */
+  weights: Partial<Record<Pillar, number>>;
+
+  /** Disable specific scanners by name */
+  disabledScanners: string[];
+}
+
+/**
+ * Bot detection configuration
+ */
+export interface BotFilterConfig {
+  /** Enable bot filtering (default: true) */
+  enabled: boolean;
+
+  /** Additional bot usernames to filter */
+  additional: string[];
+
+  /** Patterns to exclude from bot detection */
+  exclude: string[];
+}
+
+/**
+ * Inclusive language scanner configuration
+ */
+export interface InclusiveConfig {
+  /** Remote URL for term list (null = use bundled) */
+  termListUrl: string | null;
+
+  /** Custom terms to add (tier -> terms mapping) */
+  customTerms: Record<string, TermDefinition[]>;
+
+  /** Terms to ignore (false positives) */
+  ignoredTerms: string[];
+
+  /** File patterns to exclude from scanning */
+  excludePatterns: string[];
+}
+
+/**
+ * Term definition for inclusive language checking
+ */
+export interface TermDefinition {
+  /** Term to detect */
+  term: string;
+
+  /** Tier level (1 = replace immediately, 2 = strongly consider, 3 = recommended) */
+  tier: 1 | 2 | 3;
+
+  /** Recommended replacements */
+  replacements: string[];
+
+  /** Explanation of why this term is problematic */
+  reason?: string;
+}
+```
+
+### Storage & Persistence Types
+
+```typescript
+/**
+ * Scan history record stored in ZeroDB PostgreSQL
+ */
+export interface ScanHistoryRecord {
+  /** Auto-generated UUID */
+  id: string;
+
+  /** Repository identifier */
+  repo: string;
+
+  /** Scan timestamp */
+  scannedAt: Date;
+
+  /** Git commit SHA */
+  commitSha: string | null;
+
+  /** Git branch */
+  branch: string | null;
+
+  /** Overall score */
+  overallScore: number;
+
+  /** Risk level */
+  riskLevel: RiskLevel;
+
+  /** Pillar scores (JSONB) */
+  pillarScores: Record<Pillar, number>;
+
+  /** Finding counts by severity (JSONB) */
+  findingCounts: {
+    critical: number;
+    warning: number;
+    info: number;
+    pass: number;
+  };
+
+  /** Scan duration */
+  durationMs: number;
+
+  /** Scanner version */
+  version: string;
+
+  /** Scan depth */
+  depth: ScanDepth;
+}
+
+/**
+ * Trend data for historical analysis
+ */
+export interface TrendData {
+  /** Repository identifier */
+  repo: string;
+
+  /** Analysis period */
+  period: {
+    start: Date;
+    end: Date;
+    days: number;
+  };
+
+  /** Score trend direction */
+  trend: 'improving' | 'stable' | 'declining';
+
+  /** Percentage change in score */
+  changePercent: number;
+
+  /** Data points for charting */
+  dataPoints: Array<{
+    date: Date;
+    score: number;
+    commitSha: string | null;
+  }>;
+
+  /** New findings since first scan in period */
+  newFindings: Finding[];
+
+  /** Resolved findings since first scan in period */
+  resolvedFindings: Finding[];
+}
+```
+
+### External Integration Types
+
+```typescript
+/**
+ * GitHub API client interface
+ */
+export interface GitHubClient {
+  /** Get repository metadata */
+  getRepo(owner: string, repo: string): Promise<GitHubRepo>;
+
+  /** Get contributors list */
+  getContributors(owner: string, repo: string): Promise<GitHubContributor[]>;
+
+  /** Get recent commits */
+  getCommits(owner: string, repo: string, since?: Date): Promise<GitHubCommit[]>;
+
+  /** Get open issues */
+  getIssues(owner: string, repo: string, state?: 'open' | 'closed' | 'all'): Promise<GitHubIssue[]>;
+
+  /** Get branch protection rules */
+  getBranchProtection(owner: string, repo: string, branch: string): Promise<BranchProtection | null>;
+
+  /** Get code scanning alerts */
+  getCodeScanningAlerts(owner: string, repo: string): Promise<CodeScanningAlert[]>;
+
+  /** Get Dependabot alerts */
+  getDependabotAlerts(owner: string, repo: string): Promise<DependabotAlert[]>;
+
+  /** Check if file exists at path */
+  fileExists(owner: string, repo: string, path: string): Promise<boolean>;
+
+  /** Get file content */
+  getFileContent(owner: string, repo: string, path: string): Promise<string | null>;
+}
+
+/**
+ * ZeroDB client interface
+ */
+export interface ZeroDBClient {
+  /** Vector operations */
+  vectors: {
+    upsert(id: string, embedding: number[], metadata: Record<string, unknown>): Promise<void>;
+    search(embedding: number[], limit: number): Promise<VectorSearchResult[]>;
+  };
+
+  /** File storage operations */
+  files: {
+    upload(key: string, content: Buffer): Promise<string>;
+    download(key: string): Promise<Buffer>;
+    getUrl(key: string, expiresIn?: number): Promise<string>;
+  };
+
+  /** PostgreSQL operations */
+  postgres: {
+    query<T>(sql: string, params?: unknown[]): Promise<T[]>;
+    insert(table: string, data: Record<string, unknown>): Promise<void>;
+  };
+
+  /** Memory/context operations */
+  memory: {
+    store(key: string, content: string, metadata?: Record<string, unknown>): Promise<void>;
+    search(query: string, limit?: number): Promise<MemorySearchResult[]>;
+  };
+}
+
+/**
+ * Vector search result from ZeroDB
+ */
+export interface VectorSearchResult {
+  id: string;
+  score: number;
+  metadata: Record<string, unknown>;
+}
+
+/**
+ * Memory search result from ZeroDB
+ */
+export interface MemorySearchResult {
+  key: string;
+  content: string;
+  similarity: number;
+  metadata: Record<string, unknown>;
+}
+```
+
+### Database Schema
+
+```sql
+-- ZeroDB PostgreSQL schema for scan history (Story 8.3a)
+
+CREATE TABLE IF NOT EXISTS scan_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  repo VARCHAR(255) NOT NULL,
+  scanned_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  commit_sha VARCHAR(40),
+  branch VARCHAR(255),
+  overall_score DECIMAL(3,1) NOT NULL CHECK (overall_score >= 0 AND overall_score <= 10),
+  risk_level VARCHAR(20) NOT NULL CHECK (risk_level IN ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW')),
+  pillar_scores JSONB NOT NULL,
+  finding_counts JSONB NOT NULL,
+  duration_ms INTEGER NOT NULL,
+  version VARCHAR(20) NOT NULL,
+  depth VARCHAR(20) NOT NULL CHECK (depth IN ('quick', 'standard', 'thorough')),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- Indexes for common queries
+CREATE INDEX idx_scan_history_repo ON scan_history(repo);
+CREATE INDEX idx_scan_history_repo_date ON scan_history(repo, scanned_at DESC);
+CREATE INDEX idx_scan_history_commit ON scan_history(commit_sha) WHERE commit_sha IS NOT NULL;
+
+-- Trend query example
+-- SELECT repo, scanned_at, overall_score
+-- FROM scan_history
+-- WHERE repo = $1 AND scanned_at > NOW() - INTERVAL '30 days'
+-- ORDER BY scanned_at ASC;
+```
+
+### Configuration File Schema
+
+```yaml
+# .quaid-scanner.yaml - Example configuration file
+
+# Maturity level (auto-detect if not specified)
+maturity: incubating
+
+# Scan settings
+depth: standard
+format: json
+threshold: 7.0
+scannerTimeout: 30000
+
+# Pillar configuration
+pillars:
+  disabled: []
+  weights:
+    security: 0.30      # Increase security weight
+    governance: 0.20
+    community: 0.15
+    ai_readiness: 0.10  # Decrease AI weight
+    inclusive: 0.15
+    technical: 0.10
+  disabledScanners:
+    - openssf-scorecard  # Skip if no Docker available
+
+# Bot filtering
+bots:
+  enabled: true
+  additional:
+    - my-custom-bot
+    - internal-automation
+  exclude:
+    - friendly-helper    # Not actually a bot
+
+# Inclusive language
+inclusive:
+  termListUrl: null  # Use bundled
+  customTerms:
+    tier1:
+      - term: legacy-term
+        replacements: [modern-term]
+        reason: Company policy
+  ignoredTerms:
+    - master  # Git branch name, accepted
+  excludePatterns:
+    - "vendor/**"
+    - "*.min.js"
+```
+
+---
+
 ## Architecture
 
 ### Package Structure
