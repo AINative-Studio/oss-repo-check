@@ -377,9 +377,21 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
+## Implementation Status
+
+Each story heading is marked with its current status as of v0.1.1:
+
+| Marker | Meaning |
+|--------|---------|
+| ✅ | Fully implemented and shipped |
+| 🚧 | Implemented with known gaps (see story notes) |
+| 📋 | Not yet implemented — roadmap |
+
+---
+
 ## Epic 1: Core Infrastructure
 
-### Story 1.1: Project Initialization
+### Story 1.1: Project Initialization ✅
 **As a** Developer Agent
 **I want** a well-structured TypeScript project
 **So that** I can build maintainable, type-safe code
@@ -400,7 +412,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 1.2: CLI Interface
+### Story 1.2: CLI Interface ✅
 **As a** Developer Agent
 **I want** a command-line interface optimized for programmatic invocation
 **So that** I can scan repositories and parse structured output
@@ -430,7 +442,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 1.3a: Scanner Plugin Architecture
+### Story 1.3a: Scanner Plugin Architecture ✅
 **As a** Developer Agent
 **I want** a modular scanner plugin system
 **So that** new check categories can be added via configuration
@@ -449,7 +461,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 1.3b: Scanner Orchestration & Scoring
+### Story 1.3b: Scanner Orchestration & Scoring ✅
 **As a** Developer Agent
 **I want** parallel scanner execution with weighted scoring
 **So that** scan results are efficient and consistent
@@ -470,7 +482,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ## Epic 2: Security & Supply Chain (Pillar A)
 
-### Story 2.1a: OpenSSF Scorecard CLI Integration (SEC-01a)
+### Story 2.1a: OpenSSF Scorecard CLI Integration (SEC-01a) 🚧
 **As a** Security Agent
 **I want** OpenSSF Scorecard execution via Docker/API
 **So that** I can assess supply chain security using industry standards
@@ -491,7 +503,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 2.1b: OpenSSF Scorecard Caching & History (SEC-01b)
+### Story 2.1b: OpenSSF Scorecard Caching & History (SEC-01b) ✅
 **As a** OSPO Agent
 **I want** cached Scorecard results with historical tracking
 **So that** I can monitor security trends over time
@@ -508,7 +520,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 2.1c: OpenSSF Local Fallback Checks (SEC-01c)
+### Story 2.1c: OpenSSF Local Fallback Checks (SEC-01c) ✅
 **As a** Security Agent
 **I want** local security checks when Scorecard is unavailable
 **So that** I can still assess basic security hygiene offline
@@ -548,7 +560,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 2.2: Branch Protection Audit (SEC-02)
+### Story 2.2: Branch Protection Audit (SEC-02) ✅
 **As a** Security Agent
 **I want** branch protection verification
 **So that** I can ensure code review requirements
@@ -573,7 +585,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 2.3a: Dependency Pinning - Package Managers (SEC-03a)
+### Story 2.3a: Dependency Pinning - Package Managers (SEC-03a) ✅
 **As a** Security Agent
 **I want** dependency pinning validation for package managers
 **So that** I can prevent supply chain attacks via unpinned dependencies
@@ -594,7 +606,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 2.3b: Dependency Pinning - Docker & Workflows (SEC-03b)
+### Story 2.3b: Dependency Pinning - Docker & Workflows (SEC-03b) ✅
 **As a** Security Agent
 **I want** dependency pinning validation for Docker and GitHub Actions
 **So that** I can prevent supply chain attacks via mutable tags
@@ -616,7 +628,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 2.4: Binary Artifact Detection (SEC-04)
+### Story 2.4: Binary Artifact Detection (SEC-04) ✅
 **As a** Security Agent
 **I want** binary file detection
 **So that** I can identify potential malware vectors
@@ -640,7 +652,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 2.5: Token Permission Analysis (SEC-05)
+### Story 2.5: Token Permission Analysis (SEC-05) ✅
 **As a** Security Agent
 **I want** GitHub Actions permission analysis
 **So that** I can enforce least privilege
@@ -666,7 +678,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ## Epic 3: Governance & Legal Compliance (Pillar B)
 
-### Story 3.1a: License Detection & Identification (GOV-01a)
+### Story 3.1a: License Detection & Identification (GOV-01a) ✅
 **As a** OSPO Agent
 **I want** project license identification from multiple sources
 **So that** I can determine the licensing terms
@@ -684,7 +696,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.1b: Dependency License Scanning (GOV-01b)
+### Story 3.1b: Dependency License Scanning (GOV-01b) 📋
 **As a** OSPO Agent
 **I want** dependency license scanning via ClearlyDefined API
 **So that** I can identify transitive license requirements
@@ -702,7 +714,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.1c: License Compatibility Analysis (GOV-01c)
+### Story 3.1c: License Compatibility Analysis (GOV-01c) ✅
 **As a** OSPO Agent
 **I want** license conflict detection using compatibility matrix
 **So that** I can avoid legal liability
@@ -730,7 +742,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.2a: SPDX License List Management (GOV-02a)
+### Story 3.2a: SPDX License List Management (GOV-02a) ✅
 **As a** OSPO Agent
 **I want** cached SPDX license data with vector embeddings
 **So that** I can perform accurate license matching
@@ -747,7 +759,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.2b: LICENSE Content Validation (GOV-02b)
+### Story 3.2b: LICENSE Content Validation (GOV-02b) ✅
 **As a** OSPO Agent
 **I want** LICENSE file content validation against SPDX templates
 **So that** I can verify license authenticity
@@ -768,7 +780,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.2c: Source File License Headers (GOV-02c)
+### Story 3.2c: Source File License Headers (GOV-02c) ✅
 **As a** OSPO Agent
 **I want** SPDX license header validation in source files
 **So that** I can verify consistent licensing
@@ -785,7 +797,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.3a: Governance File Detection (GOV-03a)
+### Story 3.3a: Governance File Detection (GOV-03a) ✅
 **As a** OSPO Agent
 **I want** governance documentation detection
 **So that** I can assess project decision-making structure
@@ -803,7 +815,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.3b: Governance Model Classification (GOV-03b)
+### Story 3.3b: Governance Model Classification (GOV-03b) ✅
 **As a** OSPO Agent
 **I want** governance model classification using semantic analysis
 **So that** I can categorize project governance structure
@@ -825,7 +837,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.4a: Bus Factor Analysis (GOV-04a)
+### Story 3.4a: Bus Factor Analysis (GOV-04a) ✅
 **As a** OSPO Agent
 **I want** bus factor and maintainer concentration analysis
 **So that** I can assess single-point-of-failure risk
@@ -849,7 +861,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.4b: Vendor Neutrality Analysis (GOV-04b)
+### Story 3.4b: Vendor Neutrality Analysis (GOV-04b) ✅
 **As a** OSPO Agent
 **I want** vendor concentration analysis
 **So that** I can assess vendor lock-in risk
@@ -873,7 +885,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 3.5: Asset Protection & Legal Barrier Automation (GOV-05)
+### Story 3.5: Asset Protection & Legal Barrier Automation (GOV-05) ✅
 **As a** OSPO Agent
 **I want** trademark, export control, and contribution agreement checks
 **So that** I can verify commercial OSS compliance and contributor friction
@@ -924,7 +936,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 > Based on The Open Source Way 2.0 framework: Attracting Users → Growing Participants → Cultivating Contributors
 
-### Story 4.1a: Issue/PR Response Time Collection (COM-01a)
+### Story 4.1a: Issue/PR Response Time Collection (COM-01a) ✅
 **As a** OSPO Agent
 **I want** response time data collection from GitHub
 **So that** I can measure community engagement
@@ -941,7 +953,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.1b: Bot Filtering for Response Metrics (COM-01b)
+### Story 4.1b: Bot Filtering for Response Metrics (COM-01b) ✅
 **As a** OSPO Agent
 **I want** bot comment filtering using configurable patterns
 **So that** I measure genuine human engagement
@@ -960,7 +972,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.1c: Response Time Classification (COM-01c)
+### Story 4.1c: Response Time Classification (COM-01c) ✅
 **As a** OSPO Agent
 **I want** response time health classification
 **So that** I can assess community engagement quality
@@ -982,7 +994,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.2a: Contributor Data Collection (COM-02a)
+### Story 4.2a: Contributor Data Collection (COM-02a) ✅
 **As a** OSPO Agent
 **I want** contributor data extraction from git history
 **So that** I can analyze contributor distribution
@@ -1001,7 +1013,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.2b: Contributor Funnel Analysis (COM-02b)
+### Story 4.2b: Contributor Funnel Analysis (COM-02b) ✅
 **As a** OSPO Agent
 **I want** contributor pipeline metrics with conversion rates
 **So that** I can identify retention issues
@@ -1023,7 +1035,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.3a: Issue Closure Metrics (COM-03a)
+### Story 4.3a: Issue Closure Metrics (COM-03a) ✅
 **As a** OSPO Agent
 **I want** issue and PR closure ratio calculation
 **So that** I can measure team capacity
@@ -1043,7 +1055,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.3b: Maintainer Burnout Detection (COM-03b)
+### Story 4.3b: Maintainer Burnout Detection (COM-03b) ✅
 **As a** OSPO Agent
 **I want** burnout risk indicators based on combined signals
 **So that** I can intervene before maintainer collapse
@@ -1065,7 +1077,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.4: Psychological Safety Artifacts (COM-04)
+### Story 4.4: Psychological Safety Artifacts (COM-04) ✅
 **As a** OSPO Agent
 **I want** visible DEI infrastructure detection
 **So that** I can assess community safety signals
@@ -1090,7 +1102,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.5: Stale Bot Aggression Check (COM-05)
+### Story 4.5: Stale Bot Aggression Check (COM-05) ✅
 **As a** OSPO Agent
 **I want** stale bot configuration analysis
 **So that** contributions aren't prematurely closed
@@ -1117,7 +1129,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.6: Support Channel Clarity (COM-06)
+### Story 4.6: Support Channel Clarity (COM-06) ✅
 **As a** OSPO Agent
 **I want** support documentation and channel validation
 **So that** I can assess user guidance quality
@@ -1142,7 +1154,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 4.7: Funding Infrastructure (COM-07)
+### Story 4.7: Funding Infrastructure (COM-07) 🚧
 **As a** OSPO Agent
 **I want** funding mechanism detection
 **So that** I can assess financial sustainability options
@@ -1168,7 +1180,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ## Epic 5: AI-Native Readiness (Pillar D)
 
-### Story 5.1a: AI Repository Detection (AI-01a)
+### Story 5.1a: AI Repository Detection (AI-01a) ✅
 **As a** Developer Agent
 **I want** AI/ML repository detection
 **So that** I can conditionally apply Model Card requirements
@@ -1184,7 +1196,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 5.1b: Model Card Section Detection (AI-01b)
+### Story 5.1b: Model Card Section Detection (AI-01b) ✅
 **As a** Developer Agent
 **I want** Model Card section validation
 **So that** I can ensure AI documentation standards
@@ -1204,7 +1216,7 @@ Recommendation: "Projects with similar community health issues improved by addin
 
 ---
 
-### Story 5.1c: Model Card Scoring (AI-01c)
+### Story 5.1c: Model Card Scoring (AI-01c) ✅
 **As a** Developer Agent
 **I want** Model Card completeness scoring
 **So that** I can measure AI documentation quality
@@ -1250,7 +1262,7 @@ model-index:
 
 ---
 
-### Story 5.2: Dataset Provenance (AI-02)
+### Story 5.2: Dataset Provenance (AI-02) ✅
 **As a** Developer Agent
 **I want** dataset documentation checks
 **So that** I can verify data lineage
@@ -1272,7 +1284,7 @@ model-index:
 
 ---
 
-### Story 5.3: Multi-Model Agentic Rule Detection (AI-03)
+### Story 5.3: Multi-Model Agentic Rule Detection (AI-03) ✅
 **As a** Developer Agent
 **I want** agentic configuration detection for all major coding AI assistants
 **So that** I can verify AI-native repository readiness
@@ -1314,7 +1326,7 @@ model-index:
 
 ---
 
-### Story 5.4: Metadata Quality (AI-04)
+### Story 5.4: Metadata Quality (AI-04) 🚧
 **As a** Developer Agent
 **I want** machine-readable metadata validation
 **So that** I can enable automated discovery
@@ -1340,7 +1352,7 @@ model-index:
 
 ## Epic 6: Inclusive Language & Accessibility (Pillar E)
 
-### Story 6.1a: Inclusive Naming Term List Management (INC-01a)
+### Story 6.1a: Inclusive Naming Term List Management (INC-01a) 📋
 **As a** Developer Agent
 **I want** inclusive naming term list loading and caching
 **So that** I can detect non-inclusive terminology
@@ -1357,7 +1369,7 @@ model-index:
 
 ---
 
-### Story 6.1b: Documentation Language Scanning (INC-01b)
+### Story 6.1b: Documentation Language Scanning (INC-01b) ✅
 **As a** Developer Agent
 **I want** non-inclusive terminology detection in documentation
 **So that** I can improve contributor experience
@@ -1391,7 +1403,7 @@ model-index:
 
 ---
 
-### Story 6.1c: Code Comment Language Scanning (INC-01c)
+### Story 6.1c: Code Comment Language Scanning (INC-01c) ✅
 **As a** Developer Agent
 **I want** non-inclusive terminology detection in code comments
 **So that** I can ensure inclusive codebase language
@@ -1424,7 +1436,7 @@ model-index:
 
 ---
 
-### Story 6.1d: Inclusive Language Scoring (INC-01d)
+### Story 6.1d: Inclusive Language Scoring (INC-01d) ✅
 **As a** Developer Agent
 **I want** tiered inclusive language scoring
 **So that** I can prioritize terminology improvements
@@ -1462,7 +1474,7 @@ model-index:
 
 ---
 
-### Story 6.2: Diminishing Language Detection (INC-02)
+### Story 6.2: Diminishing Language Detection (INC-02) ✅
 **As a** Developer Agent
 **I want** dismissive language detection
 **So that** I can create welcoming documentation
@@ -1501,7 +1513,7 @@ model-index:
 
 ---
 
-### Story 6.3: Assumed Knowledge Detection (INC-03)
+### Story 6.3: Assumed Knowledge Detection (INC-03) ✅
 **As a** Developer Agent
 **I want** prerequisite knowledge flagging
 **So that** I can identify documentation gaps
@@ -1547,7 +1559,7 @@ model-index:
 
 ## Epic 7: Technical Rigor (Pillar F)
 
-### Story 7.1: Linter Configuration Check (TECH-01)
+### Story 7.1: Linter Configuration Check (TECH-01) ✅
 **As a** Developer Agent
 **I want** linter presence verification
 **So that** I can ensure code standards
@@ -1573,7 +1585,7 @@ model-index:
 
 ---
 
-### Story 7.2: Test Coverage Detection (TECH-02)
+### Story 7.2: Test Coverage Detection (TECH-02) ✅
 **As a** TDD Agent
 **I want** coverage reporting verification
 **So that** I can assess test quality
@@ -1597,7 +1609,7 @@ model-index:
 
 ---
 
-### Story 7.3: Semantic Versioning Validation (TECH-03)
+### Story 7.3: Semantic Versioning Validation (TECH-03) ✅
 **As a** Developer Agent
 **I want** semver compliance verification
 **So that** I can ensure predictable versioning
@@ -1623,7 +1635,7 @@ model-index:
 
 ---
 
-### Story 7.4: Release Cadence & Project Vitality (TECH-04)
+### Story 7.4: Release Cadence & Project Vitality (TECH-04) ✅
 **As a** OSS Researcher Agent
 **I want** release health metrics
 **So that** I can distinguish active projects from abandonware
@@ -1670,7 +1682,7 @@ model-index:
 
 ---
 
-### Story 7.5: Interaction Template Validation (TECH-05)
+### Story 7.5: Interaction Template Validation (TECH-05) ✅
 **As a** Developer Agent
 **I want** issue/PR template validation
 **So that** contributors have a smooth experience filing reports
@@ -1716,7 +1728,7 @@ model-index:
 
 ## Epic 8: Reporting & Output
 
-### Story 8.1: JSON Report Generator
+### Story 8.1: JSON Report Generator ✅
 **As a** Developer Agent
 **I want** machine-readable JSON output
 **So that** I can automate quality gates
@@ -1780,7 +1792,7 @@ model-index:
 
 ---
 
-### Story 8.2: Markdown Report Generator
+### Story 8.2: Markdown Report Generator ✅
 **As a** Human persona (via agent)
 **I want** readable markdown output
 **So that** I can review findings easily
@@ -1805,7 +1817,7 @@ model-index:
 
 ---
 
-### Story 8.3a: Scan History Storage (HIST-01a)
+### Story 8.3a: Scan History Storage (HIST-01a) ✅
 **As an** OSPO Agent
 **I want** scan history storage in ZeroDB
 **So that** I can track improvement over time
@@ -1822,7 +1834,7 @@ model-index:
 
 ---
 
-### Story 8.3b: Trend Analysis & Comparison (HIST-01b)
+### Story 8.3b: Trend Analysis & Comparison (HIST-01b) ✅
 **As an** OSPO Agent
 **I want** trend analysis and scan comparison
 **So that** I can monitor progress
@@ -1847,7 +1859,7 @@ model-index:
 
 Strategic analysis of the competitive and cooperative OSS landscape. **Not a scored pillar** — does not affect `overallScore`. Opt-in via `--ecosystem` flag.
 
-### Story 10.1: Domain Detection
+### Story 10.1: Domain Detection ✅
 **As a** developer running quaid-scanner
 **I want** the tool to identify my project's domain
 **So that** ecosystem analysis is relevant to my space
@@ -1865,7 +1877,7 @@ Strategic analysis of the competitive and cooperative OSS landscape. **Not a sco
 
 ---
 
-### Story 10.2: Foundation & Standards Mapping
+### Story 10.2: Foundation & Standards Mapping ✅
 **As a** maintainer
 **I want** to know which foundations and standards apply to my domain
 **So that** I can pursue alignment and certification
@@ -1882,7 +1894,7 @@ Strategic analysis of the competitive and cooperative OSS landscape. **Not a sco
 
 ---
 
-### Story 10.3: Rival & Partner Discovery
+### Story 10.3: Rival & Partner Discovery ✅
 **As a** maintainer
 **I want** to know which projects are my rivals and potential partners
 **So that** I can differentiate and collaborate strategically
@@ -1902,7 +1914,7 @@ Strategic analysis of the competitive and cooperative OSS landscape. **Not a sco
 
 ---
 
-### Story 10.4: Community Mapping
+### Story 10.4: Community Mapping ✅
 **As a** maintainer
 **I want** a list of relevant communities to join
 **So that** I can increase my project's visibility and gather users
@@ -1920,7 +1932,7 @@ Strategic analysis of the competitive and cooperative OSS landscape. **Not a sco
 
 ---
 
-### Story 10.5: Strategy Recommendations
+### Story 10.5: Strategy Recommendations ✅
 **As a** maintainer
 **I want** actionable strategic recommendations
 **So that** I know what to do next to grow my project's ecosystem position
@@ -1939,7 +1951,7 @@ Strategic analysis of the competitive and cooperative OSS landscape. **Not a sco
 
 ---
 
-### Story 10.6: CLI Integration & Output
+### Story 10.6: CLI Integration & Output ✅
 **As a** developer
 **I want** `--ecosystem` flag to add intelligence to JSON/Markdown output
 **So that** I can include it in CI reports or read it in the terminal
@@ -1961,7 +1973,7 @@ Strategic analysis of the competitive and cooperative OSS landscape. **Not a sco
 
 ## Epic 9: Claude Code Integration
 
-### Story 9.1: Claude Skill Definition
+### Story 9.1: Claude Skill Definition ✅
 **As a** Developer Agent (Claude Code)
 **I want** a `/quaid-scan` skill
 **So that** I can scan repos conversationally
@@ -1985,7 +1997,7 @@ Strategic analysis of the competitive and cooperative OSS landscape. **Not a sco
 
 ---
 
-### Story 9.2: MCP Server Integration
+### Story 9.2: MCP Server Integration ✅
 **As a** Developer Agent
 **I want** MCP server configuration
 **So that** I can use the scanner as a tool
@@ -2000,6 +2012,181 @@ Strategic analysis of the competitive and cooperative OSS landscape. **Not a sco
 | 9.2.4 | Tool returns structured result for Claude interpretation | Result format |
 | 9.2.5 | Integration with ZeroDB MCP for historical queries | MCP chaining |
 | 9.2.6 | Documentation for MCP setup | Docs present |
+
+**Story Points:** 2
+
+---
+
+## Epic 11: Cross-Validation Harness
+
+> Systematically verify scanner accuracy by diffing quaid-scanner findings against authoritative external tools on the same repos. Discrepancies surface bugs or gaps in scanner logic.
+
+Scanners targeted for cross-validation:
+- `openssf-scorecard` — already calls the OpenSSF API; cross-validate by calling the same API independently and comparing per-check verdicts
+- `license-detection` — keyword-based local matching; validate against `licensee` CLI (GitHub's own detector) by comparing detected SPDX identifiers
+- `token-permissions` — regex-based YAML parsing; validate against `actionlint` for structural correctness
+
+New developer tooling file: `scripts/cross-validate.ts` (not part of npm dist).
+
+### Story 11.1: Cross-Validation Framework 📋
+**As a** Developer Agent
+**I want** a CLI script that runs quaid-scanner and an external validator on the same repo and diffs their findings
+**So that** I can identify systematic discrepancies between quaid findings and authoritative ground truth without manual inspection
+
+**Acceptance Criteria:**
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 11.1.1 | `scripts/cross-validate.ts` accepts `--repo <path-or-url>` and `--validator <name>` args | `--help` shows usage |
+| 11.1.2 | Script runs quaid-scanner and the selected external validator, capturing structured output from both | Outputs JSON diff object |
+| 11.1.3 | Diff report contains three lists: `agreed` (same verdict), `missed` (quaid missed, validator caught), `extra` (quaid flagged, validator did not) | JSON schema validated |
+| 11.1.4 | Exit code 0 if `missed` is empty; exit code 1 if any missed findings | Verified with test repos |
+| 11.1.5 | `npm run cross-validate` script added to package.json (devDependencies path, not published) | Script runs from project root |
+
+**Story Points:** 2
+
+---
+
+### Story 11.2: OpenSSF Scorecard Cross-Validation 📋
+**As a** Security Agent
+**I want** the cross-validation harness to compare quaid's `openssf-scorecard` findings against the OpenSSF Scorecard API response directly
+**So that** I can confirm quaid is correctly interpreting and surfacing the same per-check verdicts that the authoritative API returns
+
+**Acceptance Criteria:**
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 11.2.1 | Validator calls `https://api.securityscorecards.dev/projects/github.com/{owner}/{repo}` with the same repo used for the quaid scan | Network request logged |
+| 11.2.2 | Each Scorecard check (Branch-Protection, Code-Review, Dependency-Update-Tool, etc.) is mapped to the equivalent quaid finding category | Mapping table in `src/validation/scorecard-map.ts` |
+| 11.2.3 | Score bands (PASS ≥8, WARNING 5–7, CRITICAL <5) are compared per check; mismatches appear in `missed`/`extra` lists | Diff report includes check-level rows |
+| 11.2.4 | When Scorecard API is unavailable (non-GitHub repo, rate limit), validator exits gracefully with `INFO` finding | Tested with a local-only repo |
+| 11.2.5 | Running against `kubernetes/kubernetes` produces zero `missed` findings (known-good reference repo) | CI assertion |
+
+**Story Points:** 2
+
+---
+
+### Story 11.3: License Scanner Cross-Validation via licensee 📋
+**As a** Developer Agent
+**I want** the cross-validation harness to compare quaid's `license-detection` findings against the output of the `licensee` CLI
+**So that** I can identify repos where quaid's keyword-based detection disagrees with GitHub's own license detector and fix the gaps
+
+**Acceptance Criteria:**
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 11.3.1 | Validator shells out to `licensee detect --json` on the repo path; falls back gracefully if `licensee` not installed | Error message with install hint |
+| 11.3.2 | Detected SPDX identifier from `licensee` is compared to quaid's detected identifier; mismatch = `missed` or `extra` finding | Diff report shows SPDX IDs side by side |
+| 11.3.3 | Confidence threshold: `licensee` match_confidence < 90% is treated as `unresolvable` and excluded from diff | Threshold configurable via flag |
+| 11.3.4 | Running against a repo with an `Apache-2.0` LICENSE file produces agreement between quaid and licensee | Integration test |
+| 11.3.5 | Running against a repo with no LICENSE file produces agreement on CRITICAL finding | Integration test |
+
+**Story Points:** 2
+
+---
+
+### Story 11.4: CI Accuracy Regression 📋
+**As a** Developer Agent
+**I want** a GitHub Actions workflow that runs cross-validation weekly on 5 reference repos and fails if the discrepancy rate exceeds a threshold
+**So that** scanner regressions are caught automatically when scanner logic or external APIs change
+
+**Acceptance Criteria:**
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 11.4.1 | `.github/workflows/accuracy-regression.yml` runs on schedule (weekly) and on `workflow_dispatch` | Workflow file present |
+| 11.4.2 | Reference repo list stored in `scripts/reference-repos.json`; includes repos covering all 6 pillars with known expected verdicts | File present, 5+ repos |
+| 11.4.3 | Workflow fails if `missed` findings exceed 5% of total findings across all reference repos | Exit code check in CI |
+| 11.4.4 | Accuracy report artifact uploaded on every run (JSON + Markdown) | Actions artifact visible |
+| 11.4.5 | GITHUB_TOKEN used for OpenSSF checks; workflow skips Scorecard checks gracefully if token absent | CI log shows skip message |
+
+**Story Points:** 3
+
+---
+
+## Epic 12: Ground-Truth Corpus
+
+> Build a permanent regression test suite using synthetic fixture repos with precisely controlled properties. Scanner accuracy is continuously verified on every `npm test` run, not just in CI workflows.
+
+Pattern: existing tests use `fs.mkdtempSync()` for temporary dirs with `beforeEach`/`afterEach` lifecycle. Corpus tests follow the same pattern — no checked-in fixture directories; everything built programmatically from factory functions.
+
+New directory: `tests/corpus/` — corpus integration tests only.
+New file: `tests/fixtures/corpus-factory.ts` — factory functions for each synthetic repo profile.
+
+### Story 12.1: Fixture Factory Infrastructure 📋
+**As a** Developer Agent
+**I want** a shared fixture factory module that programmatically builds synthetic repos in temp directories
+**So that** corpus integration tests can create precisely controlled repo states without maintaining checked-in fixture files that can drift
+
+**Acceptance Criteria:**
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 12.1.1 | `tests/fixtures/corpus-factory.ts` exports `buildCorpusRepo(profile: CorpusProfile): string` returning a temp dir path | TypeScript compiles |
+| 12.1.2 | Factory supports writing arbitrary files at arbitrary paths via `writeFile(relPath, content)` | Unit test: file exists at path |
+| 12.1.3 | Factory initializes a bare git repo (`git init`, `git commit --allow-empty`) so git-based scanners don't error | `git log` succeeds in temp dir |
+| 12.1.4 | `cleanupCorpusRepo(path)` removes the temp dir; called in `afterEach` | Temp dir absent after cleanup |
+| 12.1.5 | `createScanContext(repoPath)` helper returns a minimal valid `ScanContext` for corpus tests | Type-checks as ScanContext |
+
+**Story Points:** 2
+
+---
+
+### Story 12.2: Synthetic Corpus Repo Definitions 📋
+**As a** Developer Agent
+**I want** 8 named synthetic repo profiles that cover all 6 pillars' critical scanner behaviors
+**So that** every major scanner has at least one corpus fixture that exercises it with known expected output
+
+**Acceptance Criteria:**
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 12.2.1 | `perfect-repo`: Apache-2.0 LICENSE, CONTRIBUTING.md, pinned GH Actions with `permissions:`, SECURITY.md, test config, no inclusive issues. Expected: 0 CRITICAL findings | Test asserts 0 CRITICALs |
+| 12.2.2 | `no-license-repo`: no LICENSE file, no package.json license field. Expected: CRITICAL `license` finding | Test asserts finding |
+| 12.2.3 | `unpinned-actions-repo`: `.github/workflows/ci.yml` with `actions/checkout@v4` and no `permissions:` block. Expected: CRITICAL `token-permissions`, WARNING `dependency-pinning` | Test asserts both |
+| 12.2.4 | `inclusive-issues-repo`: README with "whitelist", "master/slave", "sanity check". Expected: CRITICAL `inclusive-naming`, `inclusive-language` findings | Test asserts findings |
+| 12.2.5 | `no-tests-repo`: no test files, no test config. Expected: CRITICAL `test-coverage` finding | Test asserts finding |
+| 12.2.6 | `single-vendor-repo`: git log with 100% commits from one domain. Expected: CRITICAL `vendor-neutrality` | Test asserts finding |
+| 12.2.7 | `ai-ready-repo`: CLAUDE.md with structural sections, model-card.md with all required sections, AGENTS.md. Expected: PASS on `agentic-rules`, `model-card-detection` | Test asserts PASSes |
+| 12.2.8 | `community-healthy-repo`: SUPPORT.md, FUNDING.yml, CODE_OF_CONDUCT.md, multiple contributor emails in git log. Expected: 0 CRITICAL community findings | Test asserts 0 community CRITICALs |
+
+**Story Points:** 3
+
+---
+
+### Story 12.3: Corpus Integration Test Suite 📋
+**As a** Developer Agent
+**I want** a vitest test suite in `tests/corpus/` that runs each synthetic repo through the full orchestrator and asserts expected findings
+**So that** scanner accuracy regressions are caught on every `npm test` run, not only in external CI workflows
+
+**Acceptance Criteria:**
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 12.3.1 | `tests/corpus/` contains one `.test.ts` file per corpus repo profile (8 files minimum) | Files present |
+| 12.3.2 | Each test builds the corpus repo via factory, runs `Orchestrator.run(context)`, asserts expected finding categories and severities, then cleans up | Tests pass |
+| 12.3.3 | Custom matcher `toContainFindingWithCategory(category, severity)` exported from `tests/fixtures/corpus-matchers.ts` | Matcher used in ≥ 4 tests |
+| 12.3.4 | Corpus tests run as part of `npm test` (standard vitest glob picks up `tests/**/*.test.ts`) | `npm test` output shows corpus files |
+| 12.3.5 | Total corpus test suite completes in < 30s on a developer laptop (synthetic repos are small; no network I/O) | Timing measured in CI |
+| 12.3.6 | `npm run test:corpus` script added as standalone alias for `vitest run tests/corpus/` | Script runs in isolation |
+
+**Story Points:** 3
+
+---
+
+### Story 12.4: Mutation Validation 📋
+**As a** Developer Agent
+**I want** mutation tests that introduce a single known-bad property to the `perfect-repo` fixture and assert the scanner catches it
+**So that** I can verify each critical scanner's detection logic fires correctly and doesn't silently miss regressions when implementation details change
+
+**Acceptance Criteria:**
+
+| # | Criterion | Verification |
+|---|-----------|--------------|
+| 12.4.1 | `tests/corpus/mutation.test.ts` starts from `perfect-repo`, applies one mutation per test, runs orchestrator, asserts the introduced finding appears | Tests pass |
+| 12.4.2 | 4 mutation cases: delete LICENSE file → CRITICAL `license`; add "whitelist" to README → CRITICAL inclusive finding; remove `permissions:` from workflow → CRITICAL `token-permissions`; delete test config → CRITICAL `test-coverage` | All 4 cases present |
+| 12.4.3 | Each mutation test has isolated `beforeEach`/`afterEach` — no cross-test contamination | Tests pass in any order |
+| 12.4.4 | Mutation tests run as part of `npm test` and complete in < 15s total | Timing measured |
 
 **Story Points:** 2
 
@@ -2071,11 +2258,21 @@ quaid-scanner/
 | Epic 8: Reporting | 4 | 11 | JSON/Markdown, Historical Trends |
 | Epic 9: Claude Integration | 2 | 5 | SKILL.md, MCP Server |
 | Epic 10: Ecosystem Intelligence | 6 | 13 | Rivals, Partners, Communities, Strategy |
-| **Total** | **59** | **141** | |
+| Epic 11: Cross-Validation Harness | 4 | 9 | OpenSSF, licensee, accuracy regression CI |
+| Epic 12: Ground-Truth Corpus | 4 | 10 | Fixture factory, synthetic repos, mutation tests |
+| **Total** | **67** | **160** | |
 
 ---
 
 ### Change Log
+
+#### v2.3 Changes (from v2.2)
+
+| Change | Impact |
+|--------|--------|
+| Add Epic 11: Cross-Validation Harness | 4 stories, 9 pts — OpenSSF Scorecard API diff, licensee CLI diff, accuracy regression CI |
+| Add Epic 12: Ground-Truth Corpus | 4 stories, 10 pts — fixture factory, 8 synthetic repo profiles, corpus test suite, mutation validation |
+| Story point total: 141 → 160 | 59 → 67 stories |
 
 #### v2.2 Changes (from v2.1)
 
