@@ -269,15 +269,21 @@ describe('main() — in-process coverage', () => {
   let exitSpy: MockInstance;
   let stdoutSpy: MockInstance;
 
+  // The process.exit mock throws to unwind main()'s call stack; suppress those
+  // throws from appearing as unhandled rejections in the vitest runner.
+  const suppressExitThrows = () => {};
+
   beforeEach(() => {
     originalArgv = process.argv.slice();
     vi.resetModules();
+    process.on('unhandledRejection', suppressExitThrows);
   });
 
   afterEach(() => {
     process.argv = originalArgv;
     vi.restoreAllMocks();
     vi.resetModules();
+    process.removeListener('unhandledRejection', suppressExitThrows);
   });
 
   /**
@@ -332,6 +338,10 @@ describe('main() — in-process coverage', () => {
 
     // Wait for main() to call process.exit()
     const exitCode = await exitPromise;
+    // Drain microtasks so the module-level .catch() handler fires while the spy
+    // is still active (preventing a post-afterEach process.exit call).
+    await Promise.resolve();
+    await Promise.resolve();
     return { exitCode, stdoutOutput: outputChunks.join('') };
   }
 
@@ -499,6 +509,8 @@ describe('main() — in-process coverage', () => {
     } catch { /* intentional */ }
 
     const exitCode = await exitPromise;
+    await Promise.resolve();
+    await Promise.resolve();
     expect([0, 1, 2]).toContain(exitCode);
 
     // The ecosystem catch block should have logged an error to stderr
