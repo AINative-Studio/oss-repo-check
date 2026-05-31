@@ -43,7 +43,8 @@ jobs:
         # We write a minimal .npmrc with only the registry URL so npm has no auth token and
         # uses ACTIONS_ID_TOKEN_REQUEST_URL (set by the runner for id-token: write jobs).
         run: |
+          echo "OIDC URL present: $([ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ] && echo yes || echo no)"
           echo 'registry=https://registry.npmjs.org/' > /tmp/publish.npmrc
-          npm publish --access public --provenance --ignore-scripts
+          npm publish --access public --provenance --ignore-scripts --loglevel verbose
         env:
           NPM_CONFIG_USERCONFIG: /tmp/publish.npmrc
