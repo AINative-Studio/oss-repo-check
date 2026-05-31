@@ -37,6 +37,9 @@ jobs:
           # on CI runners the scan can take longer without a warm cache.
           QUAID_SUBPROCESS_TIMEOUT: '90000'
 
+      - name: Debug npm publish source
+        run: sed -n '130,170p' /opt/hostedtoolcache/node/22.22.3/x64/lib/node_modules/npm/lib/commands/publish.js
+
       - name: Publish
         # --ignore-scripts skips the prepublishOnly hook (build+test already done above).
         # --provenance uses the OIDC id-token for trusted publishing via GitHub Actions OIDC.
@@ -45,6 +48,6 @@ jobs:
         run: |
           echo "OIDC URL present: $([ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ] && echo yes || echo no)"
           echo 'registry=https://registry.npmjs.org/' > /tmp/publish.npmrc
-          npm publish --access public --provenance --ignore-scripts --loglevel verbose
+          npm publish --access public --provenance --ignore-scripts
         env:
           NPM_CONFIG_USERCONFIG: /tmp/publish.npmrc
