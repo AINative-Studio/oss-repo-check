@@ -37,6 +37,11 @@ jobs:
 
       - name: Build and test
         run: npm run build && npm run test:coverage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Subprocess integration tests use spawnSync with a 30s timeout;
+          # on CI runners the scan can take longer without a warm cache.
+          QUAID_SUBPROCESS_TIMEOUT: '90000'
 
       - name: Publish
         run: npm publish --access public --provenance

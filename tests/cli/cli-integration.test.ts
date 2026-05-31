@@ -54,6 +54,10 @@ afterEach(() => {
  * Convenience wrapper around spawnSync that targets the project root.
  * maxBuffer is set to 16 MB to handle large JSON reports without truncation.
  */
+const DEFAULT_SUBPROCESS_TIMEOUT = process.env.QUAID_SUBPROCESS_TIMEOUT
+  ? parseInt(process.env.QUAID_SUBPROCESS_TIMEOUT, 10)
+  : 30_000;
+
 function runCLI(
   args: string[],
   opts: { cwd?: string; timeout?: number } = {},
@@ -61,7 +65,7 @@ function runCLI(
   return spawnSync('node', [CLI, ...args], {
     cwd: opts.cwd ?? PROJECT_ROOT,
     encoding: 'utf-8',
-    timeout: opts.timeout ?? 30_000,
+    timeout: opts.timeout ?? DEFAULT_SUBPROCESS_TIMEOUT,
     maxBuffer: 16 * 1024 * 1024,
   });
 }
