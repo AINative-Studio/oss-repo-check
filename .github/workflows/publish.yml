@@ -39,8 +39,11 @@ jobs:
       - name: Publish
         # --ignore-scripts skips the prepublishOnly hook (build+test already done above).
         # --provenance uses the OIDC id-token for trusted publishing via GitHub Actions OIDC.
-        # NODE_AUTH_TOKEN must be cleared so npm uses the OIDC path instead of the token that
-        # actions/setup-node injects for all subsequent steps when registry-url is set.
-        run: npm publish --access public --provenance --ignore-scripts
+        # actions/setup-node injects _authToken into .npmrc for all steps when registry-url is
+        # set; npm treats an empty token as unconfigured rather than falling through to OIDC, so
+        # we delete the entry entirely before publishing so npm uses ACTIONS_ID_TOKEN_REQUEST_URL.
+        run: |
+          npm config delete //registry.npmjs.org/:_authToken
+          npm publish --access public --provenance --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ''
