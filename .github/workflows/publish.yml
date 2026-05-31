@@ -36,6 +36,13 @@ jobs:
           # on CI runners the scan can take longer without a warm cache.
           QUAID_SUBPROCESS_TIMEOUT: '90000'
 
+      - name: Debug publish environment
+        run: |
+          echo "npm version: $(npm --version)"
+          echo "node version: $(node --version)"
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL set: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL != '' }}"
+          npm config list
+
       - name: Publish
         # --ignore-scripts skips the prepublishOnly hook (build+test already done above).
         # --provenance uses the OIDC id-token from this job for trusted publishing;
