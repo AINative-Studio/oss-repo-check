@@ -38,7 +38,10 @@ jobs:
           QUAID_SUBPROCESS_TIMEOUT: '90000'
 
       - name: Debug npm publish source
-        run: sed -n '130,170p' /opt/hostedtoolcache/node/22.22.3/x64/lib/node_modules/npm/lib/commands/publish.js
+        run: |
+          sed -n '1,80p' /opt/hostedtoolcache/node/22.22.3/x64/lib/node_modules/npm/lib/commands/publish.js
+          echo "---"
+          grep -n "oidc\|OIDC\|trusted\|getCredentials\|token" /opt/hostedtoolcache/node/22.22.3/x64/lib/node_modules/npm/lib/commands/publish.js | head -30
 
       - name: Publish
         # --ignore-scripts skips the prepublishOnly hook (build+test already done above).
