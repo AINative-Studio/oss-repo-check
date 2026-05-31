@@ -30,7 +30,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
@@ -44,6 +43,7 @@ jobs:
           QUAID_SUBPROCESS_TIMEOUT: '90000'
 
       - name: Publish
-        run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # --ignore-scripts skips the prepublishOnly hook (build+test already done above).
+        # --provenance uses the OIDC id-token from this job for trusted publishing;
+        # no NPM_TOKEN secret needed when a trusted publisher is configured on npmjs.org.
+        run: npm publish --access public --provenance --ignore-scripts
