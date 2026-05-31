@@ -37,11 +37,10 @@ jobs:
           # on CI runners the scan can take longer without a warm cache.
           QUAID_SUBPROCESS_TIMEOUT: '90000'
 
-      - name: Debug npm publish source
-        run: |
-          sed -n '1,80p' /opt/hostedtoolcache/node/22.22.3/x64/lib/node_modules/npm/lib/commands/publish.js
-          echo "---"
-          grep -n "oidc\|OIDC\|trusted\|getCredentials\|token" /opt/hostedtoolcache/node/22.22.3/x64/lib/node_modules/npm/lib/commands/publish.js | head -30
+      - name: Upgrade npm
+        # npm 10.9.8 (bundled with Node 22) lacks the OIDC trusted-publisher credential
+        # exchange that was present in npm 9.7.x. Upgrade to latest before publishing.
+        run: npm install -g npm@latest
 
       - name: Publish
         # --ignore-scripts skips the prepublishOnly hook (build+test already done above).
@@ -49,7 +48,7 @@ jobs:
         # We write a minimal .npmrc with only the registry URL so npm has no auth token and
         # uses ACTIONS_ID_TOKEN_REQUEST_URL (set by the runner for id-token: write jobs).
         run: |
-          echo "OIDC URL present: $([ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ] && echo yes || echo no)"
+          echo "npm version: $(npm --version)"
           echo 'registry=https://registry.npmjs.org/' > /tmp/publish.npmrc
           npm publish --access public --provenance --ignore-scripts
         env:
