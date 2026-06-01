@@ -308,6 +308,8 @@ export class LicenseHeaderScanner implements Scanner {
       line: 0,
       column: null,
       suggestion: 'This check applies to repositories containing source code files.',
+      referenceUrl: 'https://reuse.software/spec/',
+      dataSource: 'local',
       metadata: {
         filesScanned: 0,
         filesWithHeaders: 0,
@@ -332,6 +334,8 @@ export class LicenseHeaderScanner implements Scanner {
       column: null,
       suggestion:
         'Consider adding SPDX-License-Identifier headers to source files for clear per-file licensing. See https://spdx.dev/learn/handling-license-info/',
+      referenceUrl: 'https://reuse.software/spec/',
+      dataSource: 'local',
       metadata: {
         filesScanned,
         filesWithHeaders: 0,
@@ -360,6 +364,7 @@ export class LicenseHeaderScanner implements Scanner {
       column: null,
       suggestion: 'License headers are consistent with the project license.',
       referenceUrl: `https://spdx.org/licenses/${rootLicense}.html`,
+      dataSource: 'local',
       metadata: {
         matchCount,
         rootLicense,
@@ -382,6 +387,7 @@ export class LicenseHeaderScanner implements Scanner {
       column: null,
       suggestion: `Update the SPDX-License-Identifier in ${header.relativePath} to "${rootLicense}" or verify the intended license for this file.`,
       referenceUrl: 'https://spdx.dev/learn/handling-license-info/',
+      dataSource: 'local',
       metadata: {
         headerLicense: header.spdxId,
         rootLicense,
@@ -404,6 +410,7 @@ export class LicenseHeaderScanner implements Scanner {
       column: null,
       suggestion: 'Add a LICENSE file to the repository root so SPDX headers can be validated against the project license.',
       referenceUrl: 'https://choosealicense.com/',
+      dataSource: 'local',
     };
   }
 
@@ -429,6 +436,8 @@ export class LicenseHeaderScanner implements Scanner {
         filesWithHeaders < filesScanned
           ? 'Consider adding SPDX-License-Identifier headers to all source files.'
           : 'All scanned source files have SPDX license headers.',
+      referenceUrl: 'https://reuse.software/spec/',
+      dataSource: 'local',
       metadata: {
         filesScanned,
         filesWithHeaders,

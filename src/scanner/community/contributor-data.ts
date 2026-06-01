@@ -47,6 +47,8 @@ export class ContributorDataScanner implements Scanner {
         line: null,
         column: null,
         suggestion,
+        referenceUrl: 'https://chaoss.community/metric-contributors/',
+        dataSource: 'heuristic',
         metadata,
       };
     };
@@ -59,7 +61,7 @@ export class ContributorDataScanner implements Scanner {
         encoding: 'utf-8',
         timeout: 30000,
       });
-      output = typeof raw === 'string' ? raw : raw.toString('utf-8');
+      output = String(raw);
     } catch (err) {
       return [
         makeFinding(

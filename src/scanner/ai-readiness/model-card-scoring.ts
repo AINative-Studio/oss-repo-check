@@ -111,6 +111,8 @@ export class ModelCardScoringScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'No action needed for non-AI repositories.',
+        referenceUrl: 'https://huggingface.co/docs/hub/en/model-cards',
+        dataSource: 'local',
       }];
     }
 
@@ -161,6 +163,8 @@ export class ModelCardScoringScanner implements Scanner {
       suggestion: severity === Severity.PASS
         ? 'Model card is well-documented.'
         : `Improve model card in ${source || 'README.md'} by adding missing sections.`,
+      referenceUrl: 'https://huggingface.co/docs/hub/en/model-cards',
+      dataSource: 'local',
       metadata: {
         source,
         completenessPercent,

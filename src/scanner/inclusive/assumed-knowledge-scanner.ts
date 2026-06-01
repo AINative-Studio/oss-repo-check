@@ -111,6 +111,8 @@ export class AssumedKnowledgeScanner implements Scanner {
             line: i + 1,
             column: null,
             suggestion: `Consider explaining what "${op.label}" means or linking to a beginner-friendly guide`,
+            referenceUrl: 'https://www.writethedocs.org/guide/docs-as-code/',
+            dataSource: 'local',
           });
           break; // Only report one git operation per line
         }
@@ -150,6 +152,8 @@ export class AssumedKnowledgeScanner implements Scanner {
             line: i + 1,
             column: null,
             suggestion: `Add ${tool.prerequisite} to a Prerequisites section so newcomers know what to install`,
+            referenceUrl: 'https://www.writethedocs.org/guide/docs-as-code/',
+            dataSource: 'local',
           });
           break; // Only report one tool per line
         }
@@ -217,6 +221,8 @@ export class AssumedKnowledgeScanner implements Scanner {
           line: i + 1,
           column: match.index + 1,
           suggestion: `Define "${acronym}" on first use, e.g., "${acronym} (Full Name)"`,
+          referenceUrl: 'https://www.writethedocs.org/guide/docs-as-code/',
+          dataSource: 'local',
         });
       }
 
@@ -267,6 +273,8 @@ export class AssumedKnowledgeScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Consider adding a Prerequisites section listing required tools and versions',
+        referenceUrl: 'https://www.writethedocs.org/guide/docs-as-code/',
+        dataSource: 'local',
       });
     }
 

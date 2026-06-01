@@ -51,6 +51,8 @@ export class GovernanceDetectionScanner implements Scanner {
           line: null,
           column: null,
           suggestion: 'Add governance documentation describing the decision-making process',
+          referenceUrl: 'https://opensource.guide/leadership-and-governance/',
+          dataSource: 'local',
           metadata: { filePath: relativePath, content },
         }];
       }
@@ -66,6 +68,8 @@ export class GovernanceDetectionScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Governance documentation is present',
+        referenceUrl: 'https://opensource.guide/leadership-and-governance/',
+        dataSource: 'local',
         metadata: { filePath: relativePath, content },
       }];
     }
@@ -81,6 +85,8 @@ export class GovernanceDetectionScanner implements Scanner {
       line: null,
       column: null,
       suggestion: 'Add a GOVERNANCE.md file describing the project decision-making process',
+      referenceUrl: 'https://opensource.guide/leadership-and-governance/',
+      dataSource: 'local',
     }];
   }
 }

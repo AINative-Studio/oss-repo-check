@@ -54,6 +54,8 @@ export class SupportChannelScanner implements Scanner {
         line: null,
         column: null,
         suggestion,
+        referenceUrl: 'https://chaoss.community/metric-chat-platform-activity/',
+        dataSource: 'local',
         metadata,
       };
     };

@@ -58,6 +58,8 @@ export class FundingScanner implements Scanner {
         line: null,
         column: null,
         suggestion,
+        referenceUrl: 'https://chaoss.community/metric-project-funding/',
+        dataSource: 'local',
         metadata,
       };
     };

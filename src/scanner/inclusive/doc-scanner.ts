@@ -12,6 +12,7 @@ import { glob } from 'glob';
 import type { Scanner, ScanContext, Finding } from '../../types/index.js';
 import { Pillar, Severity } from '../../types/index.js';
 import { TermListManager, type LoadedTerm } from './term-list.js';
+import { loadIgnorePatterns } from './ignore-file.js';
 
 /** File extensions considered documentation files. */
 const DOC_EXTENSIONS = ['md', 'txt', 'rst', 'adoc', 'html'];
@@ -100,8 +101,13 @@ export class InclusiveDocScanner implements Scanner {
       return [];
     }
 
+    // Load ignore patterns from .quaid-scanner-ignore and config
+    const fileIgnorePatterns = await loadIgnorePatterns(repoPath);
+    const configPatterns = inclusiveConfig.excludePatterns;
+    const userExcludes = [...fileIgnorePatterns, ...configPatterns];
+
     // Find documentation files
-    const files = await this.findDocFiles(repoPath);
+    const files = await this.findDocFiles(repoPath, userExcludes);
     const findings: Finding[] = [];
 
     for (const absolutePath of files) {
@@ -115,11 +121,18 @@ export class InclusiveDocScanner implements Scanner {
 
   /**
    * Find all documentation files in the repository, excluding
-   * node_modules, vendor, and .git directories.
+   * node_modules, vendor, and .git directories plus any user-supplied patterns.
+   *
+   * @param repoPath - Absolute path to the root of the repository
+   * @param userExcludes - Additional glob patterns to exclude (from
+   *   .quaid-scanner-ignore and config.inclusive.excludePatterns)
    */
-  private async findDocFiles(repoPath: string): Promise<string[]> {
+  private async findDocFiles(repoPath: string, userExcludes: string[] = []): Promise<string[]> {
     const patterns = DOC_EXTENSIONS.map((ext) => `**/*.${ext}`);
-    const ignorePatterns = EXCLUDED_DIRS.map((dir) => `${dir}/**`);
+    const ignorePatterns = [
+      ...EXCLUDED_DIRS.map((dir) => `${dir}/**`),
+      ...userExcludes,
+    ];
 
     const files = await glob(patterns, {
       cwd: repoPath,
@@ -159,10 +172,14 @@ export class InclusiveDocScanner implements Scanner {
       for (const term of terms) {
         // Use a fresh regex per line to reset lastIndex state.
         // Ensure 'g' flag is present exactly once for exec() iteration.
+        // Prepend a negative lookbehind for '.' so that property access
+        // and method call patterns such as signal.aborted or
+        // ctx.signal.abort() are not flagged as non-inclusive terms.
         const flags = term.pattern.flags.includes('g')
           ? term.pattern.flags
           : term.pattern.flags + 'g';
-        const pattern = new RegExp(term.pattern.source, flags);
+        const source = `(?<!\\.)${term.pattern.source}`;
+        const pattern = new RegExp(source, flags);
         let match: RegExpExecArray | null;
 
         while ((match = pattern.exec(line)) !== null) {
@@ -182,6 +199,7 @@ export class InclusiveDocScanner implements Scanner {
             context: contextSnippet,
             suggestion: `Replace "${matchedText}" with one of: ${term.replacements.join(', ')}`,
             referenceUrl: 'https://inclusivenaming.org/word-lists/',
+            dataSource: 'local',
             metadata: {
               matchedText,
               tier: term.tier,

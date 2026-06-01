@@ -41,6 +41,9 @@ export class TokenPermissionsScanner implements Scanner {
     const findings: Finding[] = [];
     let counter = 0;
 
+    const TOKEN_PERMISSIONS_URL =
+      'https://github.com/ossf/scorecard/blob/main/docs/checks.md#token-permissions';
+
     const makeFinding = (
       severity: Severity,
       message: string,
@@ -59,6 +62,8 @@ export class TokenPermissionsScanner implements Scanner {
         line,
         column: null,
         suggestion,
+        referenceUrl: TOKEN_PERMISSIONS_URL,
+        dataSource: 'local',
       };
     };
 
@@ -199,7 +204,6 @@ export class TokenPermissionsScanner implements Scanner {
   ): void {
     let currentJob: string | null = null;
     let inJobBlock = false;
-    let jobIndent = 0;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -210,7 +214,6 @@ export class TokenPermissionsScanner implements Scanner {
         const jobMatch = trimmed.match(/^(\s{2,})(\w[\w-]*)\s*:/);
         if (jobMatch && jobMatch[1].length === 2) {
           currentJob = jobMatch[2];
-          jobIndent = 2;
         }
       }
 

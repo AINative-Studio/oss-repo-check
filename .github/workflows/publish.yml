@@ -1,0 +1,54 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write  # required for npm trusted publishing provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          # No registry-url here: setup-node injects GITHUB_TOKEN as NODE_AUTH_TOKEN for all
+          # subsequent steps when registry-url is set, which blocks npm OIDC trusted publishing.
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and test
+        run: npm run build && npm run test:coverage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Subprocess integration tests use spawnSync with a 30s timeout;
+          # on CI runners the scan can take longer without a warm cache.
+          QUAID_SUBPROCESS_TIMEOUT: '90000'
+
+      - name: Upgrade npm
+        # npm 10.9.8 (bundled with Node 22) lacks the OIDC trusted-publisher credential
+        # exchange that was present in npm 9.7.x. Upgrade to latest before publishing.
+        run: npm install -g npm@latest
+
+      - name: Publish
+        # --ignore-scripts skips the prepublishOnly hook (build+test already done above).
+        # --provenance uses the OIDC id-token for trusted publishing via GitHub Actions OIDC.
+        # We write a minimal .npmrc with only the registry URL so npm has no auth token and
+        # uses ACTIONS_ID_TOKEN_REQUEST_URL (set by the runner for id-token: write jobs).
+        run: |
+          echo 'registry=https://registry.npmjs.org/' > /tmp/publish.npmrc
+          npm publish --access public --provenance --ignore-scripts
+        env:
+          NPM_CONFIG_USERCONFIG: /tmp/publish.npmrc

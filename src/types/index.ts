@@ -81,6 +81,9 @@ export interface Scanner {
   run(context: ScanContext): Promise<Finding[]>;
 }
 
+/** Where a finding's data originated. */
+export type FindingDataSource = 'api' | 'local' | 'heuristic';
+
 export interface Finding {
   id: string;
   severity: Severity;
@@ -90,9 +93,12 @@ export interface Finding {
   file: string | null;
   line: number | null;
   column: number | null;
+  /** Raw snippet or value that triggered this finding. */
   context?: string;
   suggestion: string;
   referenceUrl?: string;
+  /** Origin of the data used to produce this finding. */
+  dataSource?: FindingDataSource;
   metadata?: Record<string, unknown>;
 }
 
@@ -100,7 +106,9 @@ export type ScanEvent =
   | { type: 'scan:start'; repoPath: string; depth: ScanDepth }
   | { type: 'scanner:start'; scanner: string; pillar: Pillar }
   | { type: 'scanner:complete'; scanner: string; findingCount: number; durationMs: number }
-  | { type: 'scan:complete'; totalFindings: number; durationMs: number };
+  | { type: 'scan:complete'; totalFindings: number; durationMs: number }
+  | { type: 'ecosystem:start' }
+  | { type: 'ecosystem:complete'; dataSource: string };
 
 // --- Report Output Types ---
 
@@ -117,6 +125,7 @@ export interface ScanReport {
   findings: Finding[];
   recommendations: Recommendation[];
   metadata: RepoMetadata;
+  ecosystem?: import('../ecosystem/types.js').EcosystemIntelligence;
 }
 
 export interface PillarScore {
@@ -166,6 +175,8 @@ export interface ScannerConfig {
   githubToken: string | null;
   zerodbApiKey: string | null;
   zerodbProjectId: string | null;
+  ecosystem: boolean;
+  ecosystemDepth: 'static' | 'assisted';
   pillars: PillarConfig;
   bots: BotFilterConfig;
   inclusive: InclusiveConfig;

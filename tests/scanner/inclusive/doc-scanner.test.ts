@@ -298,4 +298,156 @@ describe('InclusiveDocScanner', () => {
       expect(blacklistFinding).toBeDefined();
     });
   });
+
+  describe('word-boundary matching — no false positives on technical terms', () => {
+    it('does NOT flag AbortController as an "abort" finding in documentation', async () => {
+      writeFixture(
+        tmpDir,
+        'api.md',
+        'Use `AbortController` to cancel fetch requests. AbortController is a standard Web API.\n'
+      );
+      const context = createScanContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      const abortFindings = findings.filter((f) =>
+        f.metadata !== undefined &&
+        (f.metadata as Record<string, unknown>)['matchedText'] !== undefined &&
+        f.message.includes('"abort"'),
+      );
+      expect(abortFindings).toHaveLength(0);
+    });
+
+    it('does NOT flag AbortSignal as an "abort" finding in documentation', async () => {
+      writeFixture(
+        tmpDir,
+        'guide.md',
+        'Pass an AbortSignal to the function to support cancellation.\n'
+      );
+      const context = createScanContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      const abortFindings = findings.filter((f) =>
+        f.message.includes('"abort"'),
+      );
+      expect(abortFindings).toHaveLength(0);
+    });
+
+    it('does NOT flag signal.aborted as an "abort" finding in documentation', async () => {
+      // signal.aborted is a property access on an AbortController signal;
+      // the ".aborted" suffix should not be treated as a standalone deprecated term.
+      writeFixture(
+        tmpDir,
+        'api-reference.md',
+        'Check `signal.aborted` to determine if the request was cancelled.\n'
+      );
+      const context = createScanContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      const abortFindings = findings.filter((f) =>
+        f.message.includes('"abort"'),
+      );
+      expect(abortFindings).toHaveLength(0);
+    });
+
+    it('does NOT flag ctx.signal.abort() as an "abort" finding in documentation', async () => {
+      writeFixture(
+        tmpDir,
+        'cancellation.md',
+        'To cancel: call `ctx.signal.abort()` on your AbortController instance.\n'
+      );
+      const context = createScanContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      const abortFindings = findings.filter((f) =>
+        f.message.includes('"abort"'),
+      );
+      expect(abortFindings).toHaveLength(0);
+    });
+
+    it('DOES flag standalone "abort" as a finding in documentation', async () => {
+      writeFixture(
+        tmpDir,
+        'ops.md',
+        'You can abort the operation if conditions are not met.\n'
+      );
+      const context = createScanContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      const abortFindings = findings.filter((f) =>
+        f.message.includes('"abort"'),
+      );
+      expect(abortFindings.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('does NOT flag "master" inside compound words like "masterpiece" or "mastery"', async () => {
+      writeFixture(
+        tmpDir,
+        'review.md',
+        'This is a masterpiece of engineering. The team showed great mastery.\n'
+      );
+      const context = createScanContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      const masterFindings = findings.filter((f) =>
+        f.message.includes('"master"'),
+      );
+      expect(masterFindings).toHaveLength(0);
+    });
+  });
+
+  describe('excludePatterns config integration', () => {
+    it('excludes files matching patterns in config.inclusive.excludePatterns', async () => {
+      writeFixture(tmpDir, 'docs/PRD.md', 'The whitelist and master-slave sections.\n');
+      writeFixture(tmpDir, 'guide.md', 'The whitelist entry here.\n');
+
+      const context = createScanContext(tmpDir, {
+        inclusive: {
+          termListUrl: null,
+          customTerms: {},
+          ignoredTerms: [],
+          excludePatterns: ['docs/**'],
+        },
+      });
+
+      const findings = await scanner.run(context);
+
+      // docs/PRD.md should not be scanned
+      const docFindings = findings.filter((f) => f.file?.startsWith('docs/'));
+      expect(docFindings).toHaveLength(0);
+
+      // guide.md should still be scanned
+      const guideFindings = findings.filter((f) => f.file === 'guide.md');
+      expect(guideFindings.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('excludes files matching patterns from .quaid-scanner-ignore file', async () => {
+      // Write a .quaid-scanner-ignore file
+      fs.writeFileSync(
+        path.join(tmpDir, '.quaid-scanner-ignore'),
+        '# Documentation\ndocs/\n',
+        'utf-8',
+      );
+
+      writeFixture(tmpDir, 'docs/PRD.md', 'The whitelist and master-slave sections.\n');
+      writeFixture(tmpDir, 'guide.md', 'The whitelist entry here.\n');
+
+      const context = createScanContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      // docs/PRD.md should not be scanned (excluded by .quaid-scanner-ignore)
+      const docFindings = findings.filter((f) => f.file?.startsWith('docs/'));
+      expect(docFindings).toHaveLength(0);
+
+      // guide.md should still be scanned
+      const guideFindings = findings.filter((f) => f.file === 'guide.md');
+      expect(guideFindings.length).toBeGreaterThanOrEqual(1);
+    });
+  });
 });

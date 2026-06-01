@@ -1,7 +1,8 @@
 {
   "name": "quaid-scanner",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Agent-first OSS repository health scanner based on CHAOSS metrics, The Open Source Way 2.0, and Inclusive Naming Initiative",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -26,13 +27,26 @@
     "chaoss",
     "metrics",
     "documentation",
-    "contributor-experience"
+    "contributor-experience",
+    "agent",
+    "mcp",
+    "zerodb",
+    "ecosystem",
+    "social-graph",
+    "governance",
+    "supply-chain",
+    "security",
+    "ai-native"
   ],
-  "author": "",
+  "author": "Karsten Wade <quaid@iquaid.org>",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AINative-Studio/oss-repo-check"
+    "url": "git+https://github.com/quaid/quaid-scanner.git"
+  },
+  "homepage": "https://github.com/quaid/quaid-scanner#readme",
+  "bugs": {
+    "url": "https://github.com/quaid/quaid-scanner/issues"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -43,19 +57,19 @@
     "LICENSE"
   ],
   "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^12.1.0",
-    "glob": "^10.4.5",
-    "octokit": "^4.0.2"
+    "chalk": "5.6.2",
+    "commander": "12.1.0",
+    "glob": "10.5.0",
+    "octokit": "4.1.4"
   },
   "devDependencies": {
-    "@types/node": "^20.17.12",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "@vitest/coverage-v8": "^2.1.8",
-    "eslint": "^8.57.1",
-    "prettier": "^3.8.1",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "@types/node": "20.19.33",
+    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/parser": "7.18.0",
+    "@vitest/coverage-v8": "2.1.9",
+    "eslint": "8.57.1",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3",
+    "vitest": "2.1.9"
   }
 }

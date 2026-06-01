@@ -57,6 +57,8 @@ export class IssueClosureScanner implements Scanner {
         line: null,
         column: null,
         suggestion,
+        referenceUrl: 'https://chaoss.community/metric-issue-resolution-duration/',
+        dataSource: 'api',
         metadata,
       };
     };

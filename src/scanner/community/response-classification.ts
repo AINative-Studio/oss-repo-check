@@ -117,6 +117,8 @@ export class ResponseClassificationScanner implements Scanner {
         line: null,
         column: null,
         suggestion,
+        referenceUrl: 'https://chaoss.community/metric-issue-response-time/',
+        dataSource: 'api',
         metadata,
       };
     };
@@ -184,6 +186,12 @@ export class ResponseClassificationScanner implements Scanner {
           'Check network connectivity',
         ),
       ];
+    }
+
+    if (!data.data?.repository) {
+      const gqlErrors = (data as { errors?: Array<{ message: string }> }).errors;
+      const errorMsg = gqlErrors?.[0]?.message ?? 'GraphQL response missing repository data';
+      return [makeFinding(Severity.WARNING, `GitHub API error: ${errorMsg}`, 'Check GitHub token permissions and repository access')];
     }
 
     const findings: Finding[] = [];

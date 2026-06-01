@@ -112,6 +112,8 @@ export class ModelCardDetectionScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'No action needed for non-AI repositories.',
+        referenceUrl: 'https://huggingface.co/docs/hub/en/model-cards',
+        dataSource: 'local',
       }];
     }
 
@@ -174,6 +176,8 @@ export class ModelCardDetectionScanner implements Scanner {
           ? `Consider adding recommended sections: ${missingRecommended.join(', ')}`
           : 'Model card is comprehensive.'
         : `Add missing sections to ${source || 'README.md'}: ${missingRequired.join(', ')}`,
+      referenceUrl: 'https://huggingface.co/docs/hub/en/model-cards',
+      dataSource: 'local',
       metadata: {
         source,
         presentRequired,
@@ -240,6 +244,8 @@ export class ModelCardDetectionScanner implements Scanner {
       line: null,
       column: null,
       suggestion: 'Model index metadata is properly configured.',
+      referenceUrl: 'https://huggingface.co/docs/hub/en/model-cards',
+      dataSource: 'local',
       metadata: {
         hasModelIndex: true,
       },

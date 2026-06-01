@@ -1,0 +1,19 @@
+# Test fixtures — contain flagged terms intentionally as string assertions
+tests/
+
+# Documentation that uses terms as examples of what to avoid
+docs/PRD.md
+docs/PRD-v2.md
+
+# Generated coverage reports — HTML snapshots contain flagged terms in code excerpts
+coverage/
+
+# Scanner source files — contain flagged terms as detection patterns and sets, not as usage
+# (e.g. dep-pinning-docker.ts has 'master' in MUTABLE_REFS detection set; see issue #124)
+src/scanner/
+
+# Generated scan report outputs — contain findings from other projects verbatim
+docs/scans/
+
+# Reference/specification documents that document historical terminology in context
+docs/Open_Source_Way_et_al_expansions.md

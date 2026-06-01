@@ -60,6 +60,8 @@ export class DepLicenseScanningScanner implements Scanner {
         line: null,
         column: null,
         suggestion,
+        referenceUrl: 'https://spdx.org/licenses/',
+        dataSource: 'local',
         metadata,
       };
     };

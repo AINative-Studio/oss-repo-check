@@ -153,6 +153,8 @@ export class VendorNeutralityScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Ensure the repository has git history for vendor analysis',
+        referenceUrl: 'https://chaoss.community/metric-project-sponsorship/',
+        dataSource: 'heuristic',
       });
       return findings;
     }
@@ -174,6 +176,8 @@ export class VendorNeutralityScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Vendor neutrality analysis requires commit history',
+        referenceUrl: 'https://chaoss.community/metric-project-sponsorship/',
+        dataSource: 'heuristic',
       });
       return findings;
     }
@@ -194,7 +198,8 @@ export class VendorNeutralityScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Diversify contributors across multiple organizations to reduce single-vendor risk',
-        referenceUrl: 'https://chaoss.community/metric-organizational-diversity/',
+        referenceUrl: 'https://chaoss.community/metric-project-sponsorship/',
+        dataSource: 'heuristic',
         metadata: {
           totalCommits: stats.totalCommits,
           uniqueDomains: stats.uniqueDomains,
@@ -212,7 +217,8 @@ export class VendorNeutralityScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Encourage contributions from additional organizations to improve vendor diversity',
-        referenceUrl: 'https://chaoss.community/metric-organizational-diversity/',
+        referenceUrl: 'https://chaoss.community/metric-project-sponsorship/',
+        dataSource: 'heuristic',
         metadata: {
           totalCommits: stats.totalCommits,
           uniqueDomains: stats.uniqueDomains,
@@ -230,7 +236,8 @@ export class VendorNeutralityScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Vendor diversity is healthy. Continue encouraging multi-organization contributions.',
-        referenceUrl: 'https://chaoss.community/metric-organizational-diversity/',
+        referenceUrl: 'https://chaoss.community/metric-project-sponsorship/',
+        dataSource: 'heuristic',
         metadata: {
           totalCommits: stats.totalCommits,
           uniqueDomains: stats.uniqueDomains,
@@ -250,6 +257,8 @@ export class VendorNeutralityScanner implements Scanner {
       line: null,
       column: null,
       suggestion: 'More unique domains indicates broader organizational participation',
+      referenceUrl: 'https://chaoss.community/metric-project-sponsorship/',
+      dataSource: 'heuristic',
       metadata: {
         totalCommits: stats.totalCommits,
         uniqueDomains: stats.uniqueDomains,
@@ -270,6 +279,8 @@ export class VendorNeutralityScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Succession planning documentation is present',
+        referenceUrl: 'https://chaoss.community/metric-project-sponsorship/',
+        dataSource: 'local',
         metadata: {
           successionPlanFound: true,
           successionFile: succession.file,
@@ -287,6 +298,8 @@ export class VendorNeutralityScanner implements Scanner {
         line: null,
         column: null,
         suggestion: 'Add succession planning keywords (succession, bus factor, maintainer transition, emeritus) to GOVERNANCE.md or CONTRIBUTING.md',
+        referenceUrl: 'https://chaoss.community/metric-project-sponsorship/',
+        dataSource: 'local',
       });
     }
 

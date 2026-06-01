@@ -211,6 +211,8 @@ export class DiminishingLanguageScanner implements Scanner {
               column: match.index + 1,
               context: line.trim(),
               suggestion: dp.suggestion,
+              referenceUrl: 'https://inclusivenaming.org/',
+              dataSource: 'local',
             });
 
             fileMatchCount++;
@@ -252,6 +254,8 @@ export class DiminishingLanguageScanner implements Scanner {
       file: null,
       line: null,
       column: null,
+      referenceUrl: 'https://inclusivenaming.org/',
+      dataSource: 'local',
       suggestion:
         welcomingScore > 85
           ? 'Documentation language is welcoming. Keep it up!'

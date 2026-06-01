@@ -28,6 +28,8 @@ export const DEFAULT_CONFIG: ScannerConfig = {
   githubToken: null,
   zerodbApiKey: null,
   zerodbProjectId: null,
+  ecosystem: false,
+  ecosystemDepth: 'static',
   pillars: {
     disabled: [],
     weights: {},
@@ -106,12 +108,28 @@ export function buildConfig(
     config.verbose = true;
   }
 
+  if (cliOptions.ecosystem === true) {
+    config.ecosystem = true;
+  }
+
+  if (cliOptions.ecosystemDepth === 'assisted') {
+    config.ecosystemDepth = 'assisted';
+  }
+
   if (typeof cliOptions.maturity === 'string') {
     if (cliOptions.maturity === 'auto') {
       config.maturity = null;
     } else if (cliOptions.maturity in MATURITY_MAP) {
       config.maturity = MATURITY_MAP[cliOptions.maturity];
     }
+  }
+
+  // Read GitHub token from environment when not set by caller
+  if (!config.githubToken) {
+    config.githubToken =
+      process.env['GITHUB_TOKEN'] ||
+      process.env['GITHUB_PERSONAL_ACCESS_TOKEN'] ||
+      null;
   }
 
   return config;
