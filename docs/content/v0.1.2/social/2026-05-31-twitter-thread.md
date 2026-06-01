@@ -1,98 +1,104 @@
 ---
-title: "Twitter/X Thread: quaid-scanner v0.1.2"
+title: "Twitter/X Thread: Announcing quaid-scanner"
 author: Karsten Wade
 date: 2026-05-31
 status: draft
 target: twitter
-note: "8 tweets, each under 280 chars. Thread stands alone without external links until the final tweet. Focus: the trust/evidence story. Assume v0.1.1 was seen by at least part of the audience."
+note: "9 tweets, each under 280 chars. First public announcement. Thread stands alone without external links until the final tweet. Story arc: why I built it → what it is → agent-first → evidence layer → new scanners → fork philosophy → roadmap → closing."
 ---
 
-# Twitter/X Thread: quaid-scanner v0.1.2
-
----
-
-**1/8**
-Shipped quaid-scanner v0.1.2.
-
-The theme: trust.
-
-When the scanner flags a dependency license or a flagged term in your project name, you should be able to ask "how do you know?" and get a real answer.
-
-v0.1.2 builds that answer into every finding. 🧵
+# Twitter/X Thread: Announcing quaid-scanner
 
 ---
 
-**2/8**
-Three changes for auditability:
+**1/9**
+Today I'm releasing quaid-scanner — an agent-first OSS repository health scanner.
 
-→ `dataSource` on every finding: `api`, `local`, or `heuristic`
-→ `referenceUrl` on all 43 scanners: link to the specific standard or data source
-→ Score Rationale table: markdown reports now show each pillar's weight + contribution
+Named after my GitHub handle (`quaid`) because I'm putting my name on the checks inside it.
 
-A finding you can trace is a finding you can act on.
+These are my scanners. You may want different ones. Fork it your way. 🧵
 
 ---
 
-**3/8**
-New: ClearlyDefined License Cross-Validation scanner.
+**2/9**
+The backstory: 20 years of OSS community work.
 
-Checks production npm dependencies against ClearlyDefined.io — the most comprehensive database of community-verified OSS licenses.
-
-Copyleft → WARNING (with link to the specific ClearlyDefined definition).
-Unrecognised SPDX or NOASSERTION → INFO.
+Projects don't usually fail from technical debt. They fail from *unexamined health debt* — governance never written down, contributor funnels never cultivated, security posture assumed, inclusive language adopted only after someone pointed it out.
 
 ---
 
-**4/8**
-New: Naming Scanner.
+**3/9**
+What it does:
 
-The INI term list check now extends to the project's identity — package.json name, README H1, git remote slug.
+43 scanners across 6 pillars — security (25%), governance (20%), community health (15%), AI readiness (15%), inclusive language (15%), technical rigor (10%).
 
-If your project's *name* contains a flagged term, that's CRITICAL, not INFO.
+Built on OpenSSF Scorecard, CHAOSS, The Open Source Way 2.0, and the Inclusive Naming Initiative.
 
-43 total scanners now.
-
----
-
-**5/8**
-Quality-of-life addition: `.quaid-scanner-ignore`
-
-Place one at the root of any scanned repo. Paths listed are skipped by inclusive language scanners.
-
-Test files that contain flagged terms as test assertions should not produce findings. Now they don't.
-
-Same format as `.gitignore`.
+Point it at any repo.
 
 ---
 
-**6/8**
-Also fixed: `InclusiveConfig.excludePatterns` existed in the type definitions but was never wired to any scanner.
+**4/9**
+Why agent-first:
 
-It is now.
+JSON is the primary output, not a dashboard.
 
-If you were setting it in your quaid-scanner config and wondering why nothing changed — it works now.
+Every finding has `severity`, `category`, and `suggestion`. The suggestion is raw material for a backlog story.
+
+MCP server + Claude Code skill ship in the repo. The goal: scan → parse → report → write stories → open issues. Agent-driven, human-reviewed.
 
 ---
 
-**7/8**
-v0.1.2 shows *where* each finding comes from.
+**5/9**
+v0.1.2 has an evidence layer:
 
-v0.1.3 verifies the findings are *correct*. Two mechanisms:
+→ `dataSource` on every finding: api/local/heuristic
+→ `referenceUrl` on all 43 scanners: links to the authoritative source for that check
+→ Score Rationale in every markdown report: pillar weights, raw scores, contributions
+
+When you ask "how do you know?" there's a traceable answer.
+
+---
+
+**6/9**
+New in v0.1.2:
+
+**Naming Scanner** — INI term check extended to the project's own name, README H1, git slug. Flagged project name = CRITICAL.
+
+**ClearlyDefined License Cross-Validation** — production npm deps cross-validated against clearlydefined.io, with per-dependency reference links.
+
+---
+
+**7/9**
+The fork philosophy:
+
+quaid-scanner is MY take on OSS health. Grounded in four frameworks I trust, filtered through 20 years of experience.
+
+You might weight things differently. You might know checks I'm missing.
+
+Apache-2.0. Build your own opinionated scanner. If a scanner benefits everyone, open a PR.
+
+---
+
+**8/9**
+v0.1.3 roadmap — "are the findings correct?":
 
 → Cross-validation harness: diffs quaid vs OpenSSF Scorecard API + `licensee` CLI. Fails CI if discrepancy rate is too high.
 
-→ Ground-truth corpus: synthetic repos, mutation tests. Change one thing, assert the scanner catches it. Runs on every `npm test`.
+→ Ground-truth corpus: synthetic repos + mutation tests. Change one thing, assert the scanner catches it. Runs on every `npm test`.
 
 ---
 
-**8/8**
+**9/9**
 Apache-2.0. 43 scanners. OpenSSF Scorecard, CHAOSS, The Open Source Way 2.0, INI.
 
 `npm install -g quaid-scanner`
 
 github.com/quaid/quaid-scanner
 
-If you find a finding that looks wrong — false positive, wrong severity, missing signal — open an issue. That feedback is high-priority.
+False positive reports are high-priority issues.
+
+These are my scanners. I hope they're a starting point for yours.
 
 ---
 
