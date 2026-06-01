@@ -560,6 +560,43 @@ npm run test:coverage
 
 ---
 
+## Project Health
+
+quaid-scanner scans itself. Current score as of v0.1.2:
+
+| Pillar | Score | Weight | Weighted |
+|--------|-------|--------|---------|
+| Security & Supply Chain | 3.5/10 | 25% | 0.88 |
+| Governance & Legal | 3.0/10 | 20% | 0.60 |
+| Community Health | 4.0/10 | 15% | 0.60 |
+| AI-Native & Agentic Readiness | 8.0/10 | 15% | 1.20 |
+| Inclusive Language | 0.0/10 | 15% | 0.00 |
+| Technical Rigor | 8.5/10 | 10% | 0.85 |
+| **Overall** | **4.1/10** | | |
+
+The score is honest. A solo-maintainer project at v0.1.x will have real gaps:
+
+**Open findings being tracked:**
+
+| Finding | Severity | Issue |
+|---------|----------|-------|
+| GitHub Actions not pinned to commit SHAs | WARNING | [#123](https://github.com/quaid/quaid-scanner/issues/123) |
+| `diminishing-scanner` doesn't respect `.quaid-scanner-ignore` (inflating inclusive score) | Bug | [#122](https://github.com/quaid/quaid-scanner/issues/122) |
+| OpenSSF Scorecard not yet indexed (new project) | WARNING | — |
+| Bus factor: 1 (solo maintainer) | WARNING | [contribute](#contributing) |
+| Contributor funnel: 0% conversion (new project) | WARNING | [contribute](#contributing) |
+
+**Known false positives being tracked:**
+
+| Finding | Reason | Issue |
+|---------|--------|-------|
+| Inclusive CRITICAL: `"master"` in `dep-pinning-docker.ts` | Detection target string, not usage | [#124](https://github.com/quaid/quaid-scanner/issues/124) |
+| Welcoming score 0/100 | `diminishing-scanner` ignores the ignore file — see #122 | [#122](https://github.com/quaid/quaid-scanner/issues/122) |
+
+The AI readiness (8.0) and technical rigor (8.5) scores reflect the tool's strengths: MCP server, Claude Code skill, dataset provenance scanner, 80%+ test coverage. The security and governance scores reflect real gaps that contributions and time will close.
+
+---
+
 ## Documentation
 
 | Doc | Contents |

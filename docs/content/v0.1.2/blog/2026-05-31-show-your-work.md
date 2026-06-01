@@ -79,7 +79,7 @@ That is why the license is Apache-2.0 and the repository is public: fork it your
 Build your own opinionated scanner with the checks that reflect your experience.
 And if you build a scanner or skill that would be useful to others, open a PR — the goal is a tool that gets more accurate over time with more eyes on it.
 
-(And your PRs help me solve the `bus_factor` risk that quaid-scanner warns about when there are too few people responsible for everything in a project, with the a `bus_factor` of `1` being the worst case – solo contributor/maintainer projects!)
+(And your PRs help me solve the `bus-factor` risk that quaid-scanner warns about when there are too few people responsible for everything in a project, with a `bus-factor` of `1` being the worst case — solo contributor/maintainer projects!)
 
 ---
 
