@@ -89,6 +89,19 @@ The false positive template exists because that feedback is the one I most want.
 
 ---
 
+**7b/8 — roadmap**
+v0.1.2 answers: _where does this finding come from?_
+
+v0.1.3 answers: _is this finding correct?_
+
+Two mechanisms:
+
+→ **Cross-validation harness**: diffs quaid findings against OpenSSF Scorecard API + `licensee` CLI independently; fails if discrepancy rate exceeds threshold. Runs weekly in CI.
+
+→ **Ground-truth corpus**: synthetic repos, precisely known properties. Mutation tests: start from a "perfect repo", apply one change, assert the finding appears. Runs on every `npm test`.
+
+---
+
 **8/8**
 Apache-2.0. 43 scanners. Built on OpenSSF Scorecard, CHAOSS metrics, The Open Source Way 2.0, and the Inclusive Naming Initiative.
 
@@ -96,7 +109,7 @@ Apache-2.0. 43 scanners. Built on OpenSSF Scorecard, CHAOSS metrics, The Open So
 
 github.com/quaid/quaid-scanner
 
-v0.1.3 roadmap: cross-validation against OpenSSF Scorecard API + `licensee` CLI, and a ground-truth corpus with expected findings asserted on every test run.
+False positives are high-priority issues — the false positive report template in the issue tracker is the feedback I most want.
 
 ---
 

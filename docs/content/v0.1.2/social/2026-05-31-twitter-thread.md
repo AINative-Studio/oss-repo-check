@@ -75,14 +75,13 @@ If you were setting it in your quaid-scanner config and wondering why nothing ch
 ---
 
 **7/8**
-The scanner now meets its own standards:
+v0.1.2 shows *where* each finding comes from.
 
-→ CODE_OF_CONDUCT (Contributor Covenant 2.1)
-→ SECURITY.md + SUPPORT.md
-→ Branch protection on main
-→ Issue templates including one specifically for false positives
+v0.1.3 verifies the findings are *correct*. Two mechanisms:
 
-v0.1.3: accuracy validation against OpenSSF Scorecard API + `licensee` CLI.
+→ Cross-validation harness: diffs quaid vs OpenSSF Scorecard API + `licensee` CLI. Fails CI if discrepancy rate is too high.
+
+→ Ground-truth corpus: synthetic repos, mutation tests. Change one thing, assert the scanner catches it. Runs on every `npm test`.
 
 ---
 

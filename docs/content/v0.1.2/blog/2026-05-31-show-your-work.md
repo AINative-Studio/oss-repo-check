@@ -100,12 +100,36 @@ The issue template for false positives exists because false positives are the fe
 
 ## What Is Next
 
-The roadmap for v0.1.3 is [accuracy validation](https://github.com/quaid/quaid-scanner/blob/main/docs/PRD-v2.md): a cross-validation harness that diffs quaid findings against authoritative external tools (OpenSSF Scorecard API, the `licensee` CLI), and a ground-truth corpus — synthetic fixture repositories with precisely controlled properties — whose expected findings are asserted on every test run.
+v0.1.2 answers the question _where does this finding come from?_
+v0.1.3 answers the adjacent question _is this finding correct?_
 
-The trust work in v0.1.2 is about transparency: showing where findings come from and what they are measured against.
-The accuracy work in v0.1.3 is about verification: confirming that the findings are right.
 These are related but distinct.
+Transparency about sources does not substitute for verification of accuracy.
 You need both.
+
+The v0.1.3 roadmap has two epics.
+
+**Epic 11: Cross-Validation Harness.**
+A developer script (`scripts/cross-validate.ts`) that runs the same check independently through quaid and through an authoritative external tool, then diffs the outputs.
+The initial targets are the two scanners most exposed to accuracy questions:
+
+- `openssf-scorecard` — quaid already calls the OpenSSF Scorecard API; the cross-validator calls it independently and compares per-check verdicts.
+  Any discrepancy (quaid flags something the API does not, or misses something it does) surfaces as a diff.
+- `license-detection` — quaid's keyword-based local matching is compared against the `licensee` CLI, which is the same detector GitHub uses internally.
+  SPDX identifiers are compared side by side.
+
+This also becomes a weekly GitHub Actions workflow running against five reference repositories.
+If the discrepancy rate on any check exceeds a configured threshold, the workflow fails.
+That is the feedback loop that catches scanner drift before users do.
+
+**Epic 12: Ground-Truth Corpus.**
+A set of synthetic fixture repositories, each with precisely known properties, run through the full orchestrator on every `npm test` run.
+The corpus is built from factory functions rather than checked-in fixtures, so it cannot drift.
+
+The mutation testing variant is the most useful: start from a "perfect repo" — one where every check passes — apply a single controlled change (remove a `permissions:` block from one workflow, pin a dependency to a mutable tag, add a flagged term to the package name), run the scanner, assert that exactly the expected finding now appears.
+
+If the mutation test passes, the scanner catches what it claims to catch.
+If it does not, you have a regression — and you have it before it reaches a user.
 
 ```bash
 # Update

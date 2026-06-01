@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned for 0.1.3
+
+- **Epic 11 — Cross-Validation Harness**: `scripts/cross-validate.ts` diffs quaid findings against
+  authoritative external tools — OpenSSF Scorecard API (per-check verdict comparison) and the
+  `licensee` CLI (SPDX identifier comparison). Weekly GitHub Actions accuracy-regression workflow
+  running against 5 reference repos; fails if discrepancy rate exceeds threshold. (#68–71)
+- **Epic 12 — Ground-Truth Corpus**: Synthetic fixture repositories with precisely controlled
+  properties run through the full orchestrator on every `npm test`. Mutation tests start from a
+  "perfect repo" (all checks pass), apply one change, and assert the expected finding appears.
+  `tests/corpus/` runs in the standard vitest glob. (#72–75)
+
 ## [0.1.2] - 2026-05-30
 
 ### Added
