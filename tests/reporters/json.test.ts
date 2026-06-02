@@ -33,6 +33,8 @@ function makeResult(overrides: Partial<OrchestratorResult> = {}): OrchestratorRe
     findings: [],
     thresholdPassed: true,
     durationMs: 1234,
+    partial: false,
+    failedScanners: [],
     ...overrides,
   };
 }
@@ -189,5 +191,27 @@ describe('serializeJson', () => {
     });
     const parsed = JSON.parse(serializeJson(buildScanReport(target, result, DEFAULT_CONFIG, MaturityLevel.SANDBOX, '1.0.0')));
     expect(parsed.findings[0].severity).toBe('PASS');
+  });
+
+  it('propagates partial=true and failedScanners from orchestrator result (#138)', () => {
+    const target = { type: 'local' as const, value: '/tmp' };
+    const result = makeResult({
+      partial: true,
+      failedScanners: [
+        { name: 'slow-scanner', pillar: 'security', reason: 'timeout', message: 'timed out after 90000ms' },
+      ],
+    });
+    const report = buildScanReport(target, result, DEFAULT_CONFIG, MaturityLevel.SANDBOX, '1.0.0');
+    expect(report.partial).toBe(true);
+    expect(report.failedScanners).toHaveLength(1);
+    expect(report.failedScanners[0].name).toBe('slow-scanner');
+    expect(report.failedScanners[0].reason).toBe('timeout');
+  });
+
+  it('propagates partial=false and empty failedScanners for a clean scan (#138)', () => {
+    const target = { type: 'local' as const, value: '/tmp' };
+    const report = buildScanReport(target, makeResult(), DEFAULT_CONFIG, MaturityLevel.SANDBOX, '1.0.0');
+    expect(report.partial).toBe(false);
+    expect(report.failedScanners).toHaveLength(0);
   });
 });

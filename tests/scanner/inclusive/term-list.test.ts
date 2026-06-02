@@ -130,6 +130,25 @@ describe('TermListManager', () => {
     });
   });
 
+  describe('loadTerms() — undefined config (#136)', () => {
+    it('does not throw when called with undefined config', async () => {
+      await expect(manager.loadTerms(undefined)).resolves.not.toThrow();
+    });
+
+    it('returns bundled terms when config is undefined', async () => {
+      const result = await manager.loadTerms(undefined);
+      expect(result.terms.length).toBeGreaterThan(0);
+      expect(result.source).toBe('bundled');
+    });
+
+    it('does not include error or crash findings when config is undefined', async () => {
+      const result = await manager.loadTerms(undefined);
+      // Result should be valid — no error sentinel
+      expect(result.terms).toBeDefined();
+      expect(Array.isArray(result.terms)).toBe(true);
+    });
+  });
+
   describe('loadTerms() — termListUrl branch', () => {
     it('falls back to bundled terms when termListUrl is provided (remote fetch not yet implemented)', async () => {
       // Covers lines 187-188: the if(config.termListUrl) branch that

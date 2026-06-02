@@ -38,6 +38,9 @@ export {
   type TrendData,
 } from './types/index.js';
 
+// Context
+export { buildContext, readGitInfo, type GitInfo, type BuildContextResult } from './context-builder.js';
+
 // Scanner plugin system
 export { ScannerRegistry } from './scanner/registry.js';
 export { Orchestrator, type OrchestratorResult } from './scanner/orchestrator.js';
@@ -50,6 +53,9 @@ export { DEFAULT_CONFIG, buildConfig, validateTarget } from './config.js';
 export { buildScanReport, serializeJson } from './reporters/json.js';
 export { renderMarkdown } from './reporters/markdown.js';
 export { renderTrendAscii, alertOnDrop } from './reporters/trend.js';
+
+// Issue helpers
+export { isErrorFinding, renderIssueBody } from './issues.js';
 
 // Persistence
 export { ZeroDBClient } from './integrations/zerodb-client.js';
