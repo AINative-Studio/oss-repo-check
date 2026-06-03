@@ -1,75 +1,23 @@
 {
-  "name": "quaid-scanner",
-  "version": "0.1.2",
-  "description": "Agent-first OSS repository health scanner based on CHAOSS metrics, The Open Source Way 2.0, and Inclusive Naming Initiative",
+  "name": "oss-repo-check",
+  "version": "1.0.0",
+  "description": "OSS health scanning home for AINative-Studio repositories — powered by quaid-scanner",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "quaid-scanner": "dist/cli.js"
-  },
+  "private": true,
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "lint": "eslint src/ --ext .ts",
-    "lint:fix": "eslint src/ --ext .ts --fix",
-    "prepublishOnly": "npm run build && npm run test:coverage",
-    "scan": "node dist/cli.js"
+    "scan": "quaid-scanner . --quiet --format markdown",
+    "scan:quick": "quaid-scanner . --depth quick",
+    "scan:json": "quaid-scanner . --quiet --format json"
   },
-  "keywords": [
-    "opensource",
-    "community",
-    "health",
-    "scanner",
-    "inclusive",
-    "chaoss",
-    "metrics",
-    "documentation",
-    "contributor-experience",
-    "agent",
-    "mcp",
-    "zerodb",
-    "ecosystem",
-    "social-graph",
-    "governance",
-    "supply-chain",
-    "security",
-    "ai-native"
-  ],
-  "author": "Karsten Wade <quaid@iquaid.org>",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/quaid/quaid-scanner.git"
-  },
-  "homepage": "https://github.com/quaid/quaid-scanner#readme",
-  "bugs": {
-    "url": "https://github.com/quaid/quaid-scanner/issues"
+  "dependencies": {
+    "quaid-scanner": "^0.1.3"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "dependencies": {
-    "chalk": "5.6.2",
-    "commander": "12.1.0",
-    "glob": "10.5.0",
-    "octokit": "4.1.4"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AINative-Studio/oss-repo-check"
   },
-  "devDependencies": {
-    "@types/node": "20.19.33",
-    "@typescript-eslint/eslint-plugin": "7.18.0",
-    "@typescript-eslint/parser": "7.18.0",
-    "@vitest/coverage-v8": "2.1.9",
-    "eslint": "8.57.1",
-    "prettier": "3.8.1",
-    "typescript": "5.9.3",
-    "vitest": "2.1.9"
-  }
+  "license": "Apache-2.0"
 }
