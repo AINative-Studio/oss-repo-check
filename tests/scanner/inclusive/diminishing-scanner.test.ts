@@ -426,4 +426,56 @@ describe('DiminishingLanguageScanner', () => {
       expect(Object.keys(fileGroups).length).toBe(2);
     });
   });
+
+  describe('ignore patterns (#122)', () => {
+    it('skips files matching config excludePatterns', async () => {
+      writeFileSync(join(tmpDir, 'README.md'), 'Just run npm install.\n');
+      const context = createContext(tmpDir);
+      context.config.inclusive = {
+        termListUrl: null,
+        customTerms: {},
+        ignoredTerms: [],
+        excludePatterns: ['README.md'],
+      };
+
+      const findings = await scanner.run(context);
+
+      const readmeFindings = findings.filter(
+        (f) => f.file === 'README.md' && f.category === 'diminishing-language',
+      );
+      expect(readmeFindings).toHaveLength(0);
+    });
+
+    it('skips files matching .quaid-scanner-ignore patterns', async () => {
+      writeFileSync(join(tmpDir, 'README.md'), 'Just run npm install.\n');
+      writeFileSync(join(tmpDir, '.quaid-scanner-ignore'), 'README.md\n');
+      const context = createContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      const readmeFindings = findings.filter(
+        (f) => f.file === 'README.md' && f.category === 'diminishing-language',
+      );
+      expect(readmeFindings).toHaveLength(0);
+    });
+
+    it('still scans files not matching exclude patterns', async () => {
+      writeFileSync(join(tmpDir, 'README.md'), 'Clean readme.\n');
+      writeFileSync(join(tmpDir, 'CONTRIBUTING.md'), 'Obviously fork first.\n');
+      const context = createContext(tmpDir);
+      context.config.inclusive = {
+        termListUrl: null,
+        customTerms: {},
+        ignoredTerms: [],
+        excludePatterns: ['README.md'],
+      };
+
+      const findings = await scanner.run(context);
+
+      const contributingFindings = findings.filter(
+        (f) => f.file === 'CONTRIBUTING.md' && f.category === 'diminishing-language',
+      );
+      expect(contributingFindings.length).toBeGreaterThan(0);
+    });
+  });
 });

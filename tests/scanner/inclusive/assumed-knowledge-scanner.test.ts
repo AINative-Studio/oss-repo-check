@@ -345,4 +345,65 @@ describe('AssumedKnowledgeScanner', () => {
       expect(gsFinding).toBeDefined();
     });
   });
+
+  describe('ignore patterns (#122)', () => {
+    it('skips files matching config excludePatterns', async () => {
+      fs.writeFileSync(
+        path.join(tmpDir, 'README.md'),
+        '# Project\n\nRun `npm install` to get started.\n',
+      );
+      const context = createContext(tmpDir);
+      context.config.inclusive = {
+        termListUrl: null,
+        customTerms: {},
+        ignoredTerms: [],
+        excludePatterns: ['README.md'],
+      };
+
+      const findings = await scanner.run(context);
+
+      const readmeToolFindings = findings.filter(
+        (f) => f.file === 'README.md' && f.id.startsWith('AK-TOOL-'),
+      );
+      expect(readmeToolFindings).toHaveLength(0);
+    });
+
+    it('skips files matching .quaid-scanner-ignore patterns', async () => {
+      fs.writeFileSync(
+        path.join(tmpDir, 'README.md'),
+        '# Project\n\nRun `npm install` to get started.\n',
+      );
+      fs.writeFileSync(path.join(tmpDir, '.quaid-scanner-ignore'), 'README.md\n');
+      const context = createContext(tmpDir);
+
+      const findings = await scanner.run(context);
+
+      const readmeToolFindings = findings.filter(
+        (f) => f.file === 'README.md' && f.id.startsWith('AK-TOOL-'),
+      );
+      expect(readmeToolFindings).toHaveLength(0);
+    });
+
+    it('still scans CONTRIBUTING.md when only README.md is excluded', async () => {
+      fs.writeFileSync(path.join(tmpDir, 'README.md'), '# Clean\n');
+      fs.writeFileSync(
+        path.join(tmpDir, 'CONTRIBUTING.md'),
+        '# Contributing\n\nRun `npm install` first.\n',
+      );
+      const context = createContext(tmpDir);
+      context.config.inclusive = {
+        termListUrl: null,
+        customTerms: {},
+        ignoredTerms: [],
+        excludePatterns: ['README.md'],
+      };
+
+      const findings = await scanner.run(context);
+
+      const contributingFindings = findings.filter(
+        (f) => f.file === 'CONTRIBUTING.md' && f.id.startsWith('AK-TOOL-'),
+      );
+      expect(contributingFindings.length).toBeGreaterThan(0);
+    });
+  });
 });

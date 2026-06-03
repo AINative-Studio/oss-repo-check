@@ -450,4 +450,32 @@ describe('InclusiveDocScanner', () => {
       expect(guideFindings.length).toBeGreaterThanOrEqual(1);
     });
   });
+
+  describe('undefined config.inclusive — Refs #149', () => {
+    it('does not throw when config.inclusive is undefined', async () => {
+      // Arrange: a context where the caller omitted config.inclusive entirely.
+      // Cast through unknown to simulate a real-world caller that constructs
+      // ScannerConfig without the inclusive field.
+      writeFixture(tmpDir, 'guide.md', 'The whitelist entry here.\n');
+      const context = createScanContext(tmpDir);
+      (context.config as unknown as Record<string, unknown>)['inclusive'] = undefined;
+
+      // Act + Assert: must resolve without throwing
+      await expect(scanner.run(context)).resolves.toBeDefined();
+    });
+
+    it('returns no error-category findings when config.inclusive is undefined', async () => {
+      // Arrange
+      writeFixture(tmpDir, 'guide.md', 'The whitelist entry here.\n');
+      const context = createScanContext(tmpDir);
+      (context.config as unknown as Record<string, unknown>)['inclusive'] = undefined;
+
+      // Act
+      const findings = await scanner.run(context);
+
+      // Assert: scanner should produce inclusive-language findings, not crash errors
+      const errorFindings = findings.filter((f) => f.category === 'error');
+      expect(errorFindings).toHaveLength(0);
+    });
+  });
 });

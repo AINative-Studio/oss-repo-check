@@ -478,4 +478,80 @@ describe('Orchestrator', () => {
       expect(['MEDIUM', 'HIGH']).toContain(result.riskLevel);
     });
   });
+
+  describe('partial scan detection (#138)', () => {
+    it('sets partial=false and failedScanners=[] when no scanners fail', async () => {
+      registry.register(createMockScanner({
+        name: 'clean-scanner',
+        pillar: Pillar.SECURITY,
+        findings: [createFinding({ id: 'CLEAN-01' })],
+      }));
+
+      const result = await orchestrator.run(createMinimalContext());
+
+      expect(result.partial).toBe(false);
+      expect(result.failedScanners).toHaveLength(0);
+    });
+
+    it('sets partial=true when a scanner times out', async () => {
+      registry.register(createMockScanner({
+        name: 'slow-scanner-partial',
+        pillar: Pillar.GOVERNANCE,
+        async run(_ctx: ScanContext) {
+          await new Promise((r) => setTimeout(r, 5000));
+          return [];
+        },
+      }));
+
+      const config = { ...DEFAULT_CONFIG, scannerTimeout: 100 };
+      const result = await orchestrator.run(createMinimalContext({ config }));
+
+      expect(result.partial).toBe(true);
+      expect(result.failedScanners.length).toBeGreaterThan(0);
+      expect(result.failedScanners[0].reason).toBe('timeout');
+    }, 10_000);
+
+    it('sets partial=true and captures scanner name when a scanner throws', async () => {
+      registry.register(createMockScanner({
+        name: 'crashing-scanner',
+        pillar: Pillar.COMMUNITY,
+        async run(_ctx: ScanContext): Promise<Finding[]> {
+          throw new Error('scanner crashed');
+        },
+      }));
+
+      const result = await orchestrator.run(createMinimalContext());
+
+      expect(result.partial).toBe(true);
+      expect(result.failedScanners.length).toBeGreaterThan(0);
+      expect(result.failedScanners[0].reason).toBe('error');
+      expect(result.failedScanners[0].message).toContain('scanner crashed');
+    });
+  });
+
+  describe('scannerTimeout fallback (#135)', () => {
+    it('uses DEFAULT_CONFIG.scannerTimeout when config.scannerTimeout is undefined', async () => {
+      let timeoutUsed = 0;
+      const originalSetTimeout = globalThis.setTimeout;
+
+      registry.register(createMockScanner({
+        name: 'timer-probe-scanner',
+        pillar: Pillar.SECURITY,
+        async run(_ctx: ScanContext) {
+          return [createFinding({ id: 'PROBE-01' })];
+        },
+      }));
+
+      // Pass undefined scannerTimeout — the orchestrator must NOT use 0 ms (#135)
+      const config = { ...DEFAULT_CONFIG, scannerTimeout: undefined as unknown as number };
+      const result = await orchestrator.run(createMinimalContext({ config }));
+
+      // Scan must complete without a bogus "timed out after undefinedms" finding
+      const bogusTimeouts = result.findings.filter(
+        (f) => f.category === 'timeout' && f.message.includes('undefinedms'),
+      );
+      expect(bogusTimeouts).toHaveLength(0);
+      expect(result.findings.map((f) => f.id)).toContain('PROBE-01');
+    });
+  });
 });

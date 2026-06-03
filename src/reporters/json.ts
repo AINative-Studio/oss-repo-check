@@ -70,6 +70,8 @@ export function buildScanReport(
     pillars: result.pillars,
     findings: result.findings,
     recommendations: buildRecommendations(result.findings),
+    partial: result.partial,
+    failedScanners: result.failedScanners,
     metadata: {
       commitSha: null,
       branch: null,

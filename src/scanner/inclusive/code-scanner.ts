@@ -11,6 +11,7 @@ import * as path from 'node:path';
 import { glob } from 'glob';
 import { TermListManager } from './term-list.js';
 import { loadIgnorePatterns } from './ignore-file.js';
+import { resolveInclusiveConfig } from './resolve-config.js';
 import { Pillar, Severity } from '../../types/index.js';
 import type { Scanner, ScanContext, Finding } from '../../types/index.js';
 
@@ -176,7 +177,7 @@ export class InclusiveCodeScanner implements Scanner {
 
   async run(context: ScanContext): Promise<Finding[]> {
     const { repoPath, config } = context;
-    const inclusiveConfig = config.inclusive;
+    const inclusiveConfig = resolveInclusiveConfig(config.inclusive);
 
     // Load terms, respecting ignoredTerms config
     const { terms } = await this.termManager.loadTerms(inclusiveConfig);

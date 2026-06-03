@@ -10,6 +10,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { Pillar, Severity } from '../../types/index.js';
 import type { Scanner, ScanContext, Finding } from '../../types/index.js';
+import { loadIgnorePatterns } from './ignore-file.js';
 
 /** Files to scan for assumed knowledge. */
 const TARGET_FILES: string[] = [
@@ -70,8 +71,14 @@ export class AssumedKnowledgeScanner implements Scanner {
    */
   async run(context: ScanContext): Promise<Finding[]> {
     const findings: Finding[] = [];
+    const userPatterns = await loadIgnorePatterns(context.repoPath);
+    const configPatterns = context.config.inclusive?.excludePatterns ?? [];
+    const allIgnore = [...userPatterns, ...configPatterns];
 
     for (const relPath of TARGET_FILES) {
+      if (allIgnore.some((pat) => relPath.startsWith(pat.replace(/\*\*$/, '').replace(/\*$/, '')))) {
+        continue;
+      }
       const absPath = path.join(context.repoPath, relPath);
       if (!fs.existsSync(absPath)) {
         continue;

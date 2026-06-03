@@ -13,6 +13,7 @@ import type { Scanner, ScanContext, Finding } from '../../types/index.js';
 import { Pillar, Severity } from '../../types/index.js';
 import { TermListManager, type LoadedTerm } from './term-list.js';
 import { loadIgnorePatterns } from './ignore-file.js';
+import { resolveInclusiveConfig } from './resolve-config.js';
 
 /** File extensions considered documentation files. */
 const DOC_EXTENSIONS = ['md', 'txt', 'rst', 'adoc', 'html'];
@@ -91,7 +92,7 @@ export class InclusiveDocScanner implements Scanner {
    */
   async run(context: ScanContext): Promise<Finding[]> {
     const { repoPath, config } = context;
-    const inclusiveConfig = config.inclusive;
+    const inclusiveConfig = resolveInclusiveConfig(config.inclusive);
 
     // Load terms (bundled + custom, minus ignored)
     const termList = await this.termListManager.loadTerms(inclusiveConfig);

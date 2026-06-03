@@ -13,6 +13,7 @@ import { relative } from 'path';
 import { glob } from 'glob';
 import type { Scanner, ScanContext, Finding } from '../../types/index.js';
 import { Pillar, Severity } from '../../types/index.js';
+import { loadIgnorePatterns } from './ignore-file.js';
 
 /** A diminishing language pattern definition. */
 interface DiminishingPattern {
@@ -161,7 +162,9 @@ export class DiminishingLanguageScanner implements Scanner {
    * @returns Array of findings including per-match findings and a summary
    */
   async run(context: ScanContext): Promise<Finding[]> {
-    const files = await this.findFiles(context.repoPath);
+    const userPatterns = await loadIgnorePatterns(context.repoPath);
+    const configPatterns = context.config.inclusive?.excludePatterns ?? [];
+    const files = await this.findFiles(context.repoPath, [...userPatterns, ...configPatterns]);
     const findings: Finding[] = [];
     const fileGroups: Record<string, number> = {};
 
@@ -277,7 +280,7 @@ export class DiminishingLanguageScanner implements Scanner {
    * @param repoPath - Root path of the repository
    * @returns Array of absolute file paths to scan
    */
-  private async findFiles(repoPath: string): Promise<string[]> {
+  private async findFiles(repoPath: string, userIgnore: string[] = []): Promise<string[]> {
     const fileSet = new Set<string>();
 
     for (const pattern of SCAN_PATTERNS) {
@@ -285,7 +288,7 @@ export class DiminishingLanguageScanner implements Scanner {
         cwd: repoPath,
         absolute: true,
         nodir: true,
-        ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
+        ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**', ...userIgnore],
       });
       for (const f of matched) {
         fileSet.add(f);
