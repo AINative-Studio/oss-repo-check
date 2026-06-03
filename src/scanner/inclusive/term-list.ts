@@ -177,11 +177,12 @@ export class TermListManager {
    * Priority: remote URL > bundled fallback, then merge custom terms,
    * then filter out ignored terms.
    */
-  async loadTerms(config: InclusiveConfig): Promise<LoadedTermList> {
+  async loadTerms(config: InclusiveConfig | undefined): Promise<LoadedTermList> {
+    const cfg = config ?? { termListUrl: null, customTerms: {}, ignoredTerms: [], excludePatterns: [] };
     let baseterms: LoadedTerm[];
     let source: LoadedTermList['source'];
 
-    if (config.termListUrl) {
+    if (cfg.termListUrl) {
       // Future: fetch from remote URL with caching
       // For now, fall back to bundled
       baseterms = [...BUNDLED_TERMS];
@@ -198,7 +199,7 @@ export class TermListManager {
     }
 
     // Merge custom terms from config
-    for (const [tierKey, definitions] of Object.entries(config.customTerms)) {
+    for (const [tierKey, definitions] of Object.entries(cfg.customTerms)) {
       for (const def of definitions) {
         const tier = def.tier ?? this.parseTierFromKey(tierKey);
         termMap.set(def.term, {
@@ -212,7 +213,7 @@ export class TermListManager {
     }
 
     // Filter out ignored terms
-    for (const ignored of config.ignoredTerms) {
+    for (const ignored of cfg.ignoredTerms) {
       termMap.delete(ignored);
     }
 
